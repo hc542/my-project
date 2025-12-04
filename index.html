@@ -1,1 +1,298 @@
 
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 이미지 생성기 (블로그 사진 채우기)</title>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter 폰트 설정 -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb; /* 라이트 그레이 배경 */
+        }
+        .skeleton {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8 min-h-screen flex items-center justify-center">
+
+    <div id="app" class="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-6 md:p-10 border border-gray-100">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">
+            🖼️ 블로그 사진 채우기 AI 이미지 생성기
+        </h1>
+        <p class="text-gray-600 mb-6">
+            블로그에 사용할 멋진 이미지를 생성하세요. 사진에 대한 설명을 한국어나 영어로 입력해 주세요.
+        </p>
+
+        <!-- 입력 영역 -->
+        <div class="space-y-4 mb-8">
+            <textarea
+                id="promptInput"
+                placeholder="예: 따뜻한 햇살 아래 바다가 보이는 아늑한 카페에서 커피를 마시는 모습 (고화질, 필름 사진 스타일)"
+                rows="3"
+                class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 resize-none shadow-sm"
+            ></textarea>
+
+            <button
+                id="generateButton"
+                class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition duration-200 ease-in-out shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                onclick="generateImage()"
+            >
+                이미지 생성하기
+            </button>
+        </div>
+
+        <!-- 결과 영역 -->
+        <div id="resultContainer">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">생성된 이미지</h2>
+
+            <!-- 이미지 및 로딩/에러 메시지 영역 -->
+            <div id="imageDisplay" class="min-h-72 flex items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl overflow-hidden">
+                <p id="initialMessage" class="text-gray-500 p-4 text-center">
+                    설명을 입력하고 '이미지 생성하기' 버튼을 눌러보세요!
+                </p>
+                <!-- 로딩 스켈레톤 (초기에는 숨김) -->
+                <div id="loadingSkeleton" class="p-4 w-full h-full hidden">
+                    <div class="skeleton bg-gray-300 rounded-xl w-full h-72 mb-4"></div>
+                    <div class="skeleton bg-gray-300 rounded-lg w-3/4 h-5 mx-auto"></div>
+                </div>
+                <!-- 에러 메시지 (초기에는 숨김) -->
+                <div id="errorMessage" class="hidden text-center text-red-600 p-4">
+                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.332 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <p>이미지 생성에 실패했습니다. 프롬프트를 다시 확인하거나 잠시 후 다시 시도해 주세요.</p>
+                    <p id="errorDetail" class="text-sm mt-1"></p>
+                </div>
+                <!-- 생성된 이미지 (초기에는 숨김) -->
+                <img id="generatedImage" class="w-full h-auto max-h-[500px] object-contain hidden" alt="생성된 이미지">
+            </div>
+
+            <!-- 다운로드 버튼 (초기에는 숨김) -->
+            <div class="mt-4 text-center">
+                <button
+                    id="downloadButton"
+                    class="hidden px-4 py-2 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition duration-200 ease-in-out shadow-md"
+                    onclick="downloadImage()"
+                >
+                    다운로드 (PNG)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firestore 및 Auth 환경 변수 (사용되지 않음, 이미지 생성은 외부 API 호출)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        const promptInput = document.getElementById('promptInput');
+        const generateButton = document.getElementById('generateButton');
+        const initialMessage = document.getElementById('initialMessage');
+        const imageDisplay = document.getElementById('imageDisplay');
+        const loadingSkeleton = document.getElementById('loadingSkeleton');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorDetail = document.getElementById('errorDetail');
+        const generatedImage = document.getElementById('generatedImage');
+        const downloadButton = document.getElementById('downloadButton');
+
+        // 이미지 생성 API 관련 설정
+        // **주의: 이미지를 생성할 때는 'imagen-4.0-generate-001' 모델을 사용합니다.**
+        const API_KEY = ""; // 런타임에 자동으로 제공됩니다.
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${API_KEY}`;
+        
+        let currentImageUrl = null; // 생성된 이미지의 Base64 URL 저장
+
+        /**
+         * 이미지 생성 요청을 API에 전송하고 결과를 처리합니다.
+         */
+        async function generateImage() {
+            const prompt = promptInput.value.trim();
+
+            if (!prompt) {
+                alertUser('프롬프트를 입력해 주세요.', 'warning');
+                return;
+            }
+
+            // UI 상태 초기화 및 로딩 시작
+            resetUI();
+            generateButton.disabled = true;
+            loadingSkeleton.classList.remove('hidden');
+            initialMessage.classList.add('hidden');
+            imageDisplay.classList.remove('border-dashed', 'border-gray-300');
+
+
+            // API 요청 페이로드
+            const payload = {
+                instances: [{ prompt: prompt }],
+                parameters: {
+                    sampleCount: 1, // 생성할 이미지 개수
+                    // 이미지 품질 및 크기 설정 (블로그에 적합하게 1:1 비율 선택)
+                    aspectRatio: "1:1",
+                    outputMimeType: "image/png"
+                }
+            };
+
+            // 지수 백오프를 위한 설정
+            const MAX_RETRIES = 5;
+            let currentRetry = 0;
+
+            while (currentRetry < MAX_RETRIES) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error?.message || `API 요청 실패: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    const base64Data = result?.predictions?.[0]?.bytesBase64Encoded;
+
+                    if (!base64Data) {
+                        throw new Error("이미지 데이터가 응답에 포함되어 있지 않습니다.");
+                    }
+
+                    // Base64 데이터를 이미지 URL로 변환
+                    currentImageUrl = `data:image/png;base64,${base64Data}`;
+                    generatedImage.src = currentImageUrl;
+
+                    // UI 업데이트
+                    loadingSkeleton.classList.add('hidden');
+                    generatedImage.classList.remove('hidden');
+                    downloadButton.classList.remove('hidden');
+                    imageDisplay.classList.add('p-0'); // 이미지 채우기를 위해 패딩 제거
+
+                    break; // 성공 시 루프 종료
+
+                } catch (error) {
+                    console.error("이미지 생성 오류:", error.message);
+                    currentRetry++;
+
+                    if (currentRetry < MAX_RETRIES) {
+                        // 지수 백오프: 1초, 2초, 4초 ... 대기
+                        const delay = Math.pow(2, currentRetry) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        // console.log(`재시도 (${currentRetry}/${MAX_RETRIES}). ${delay / 1000}초 대기 후 다시 시도합니다.`);
+                    } else {
+                        // 최대 재시도 횟수 초과
+                        handleError(error.message);
+                        break;
+                    }
+                }
+            }
+            
+            generateButton.disabled = false;
+        }
+
+        /**
+         * UI 상태를 초기 메시지 상태로 재설정합니다.
+         */
+        function resetUI() {
+            generatedImage.classList.add('hidden');
+            loadingSkeleton.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            downloadButton.classList.add('hidden');
+            imageDisplay.classList.add('border-dashed', 'border-gray-300');
+            imageDisplay.classList.remove('p-0');
+            initialMessage.classList.add('hidden');
+            errorDetail.textContent = '';
+            currentImageUrl = null;
+        }
+
+        /**
+         * 에러 메시지를 표시하고 UI 상태를 업데이트합니다.
+         * @param {string} message - 표시할 에러 메시지
+         */
+        function handleError(message) {
+            loadingSkeleton.classList.add('hidden');
+            errorMessage.classList.remove('hidden');
+            errorDetail.textContent = `(${message.substring(0, 100)}...)`;
+            imageDisplay.classList.add('border-dashed', 'border-gray-300');
+            imageDisplay.classList.remove('p-0');
+            generatedImage.classList.add('hidden');
+            initialMessage.classList.add('hidden');
+        }
+
+        /**
+         * 사용자에게 메시지 (경고 등)를 표시하는 커스텀 모달 함수입니다.
+         * window.alert() 사용 금지 규정에 따라 커스텀 UI를 사용합니다.
+         * @param {string} message - 사용자에게 표시할 메시지
+         * @param {string} type - 메시지 유형 ('warning', 'info' 등)
+         */
+        function alertUser(message, type) {
+            // 실제 환경에서는 사용자에게 보이는 모달 UI를 구현해야 합니다.
+            
+            // 변경: console.error 대신 console.warn을 사용하여 심각한 오류와 구분
+            if (type === 'warning') {
+                console.warn(`[사용자 알림 - WARNING]: ${message}`);
+            } else {
+                console.info(`[사용자 알림 - INFO]: ${message}`);
+            }
+
+            // 사용자에게 보일 수 있는 임시 메시지 표시
+            let tempMessage = document.getElementById('tempAlertMessage');
+            if (tempMessage) {
+                tempMessage.remove(); // 이전 메시지 제거
+            }
+
+            tempMessage = document.createElement('p');
+            tempMessage.id = 'tempAlertMessage';
+            tempMessage.textContent = message;
+
+            // 메시지 유형에 따른 배경색 설정
+            const bgColor = type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
+
+            tempMessage.className = `fixed top-0 left-1/2 -translate-x-1/2 max-w-sm w-full ${bgColor} text-white p-3 text-center rounded-b-lg shadow-xl z-50 transition-all duration-300 transform opacity-0 scale-95`;
+            
+            document.body.appendChild(tempMessage);
+
+            // 애니메이션을 통해 메시지 표시
+            setTimeout(() => {
+                tempMessage.style.opacity = '1';
+                tempMessage.style.transform = 'translate(-50%, 0) scale(1)';
+            }, 10);
+
+            // 3초 후 애니메이션을 통해 메시지 제거
+            setTimeout(() => {
+                tempMessage.style.opacity = '0';
+                tempMessage.style.transform = 'translate(-50%, -100%) scale(0.95)';
+                setTimeout(() => {
+                    tempMessage.remove();
+                }, 300); // 전환이 끝날 때까지 대기
+            }, 3000);
+        }
+        
+        /**
+         * 생성된 이미지를 다운로드합니다.
+         */
+        function downloadImage() {
+            if (currentImageUrl) {
+                const link = document.createElement('a');
+                link.href = currentImageUrl;
+                // 파일 이름을 프롬프트 기반으로 설정하거나 기본 이름 사용
+                const promptPreview = promptInput.value.trim().substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_') || 'ai_generated_image';
+                link.download = `${promptPreview}_${Date.now()}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                alertUser('다운로드할 이미지가 없습니다.', 'info');
+            }
+        }
+    </script>
+</body>
+</html>
