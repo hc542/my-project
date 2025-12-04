@@ -1,298 +1,247 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 이미지 생성기 (블로그 사진 채우기)</title>
-    <!-- Tailwind CSS 로드 -->
+    <title>조혁의 아카이브 - 개인 웹 블로그 홈</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter 폰트 설정 -->
+    <!-- Icon Library (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        /* 기본 폰트를 Inter로 설정 */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f7f9fb; /* 라이트 그레이 배경 */
+            background-color: #f7f9fb; /* 아주 연한 배경 */
         }
-        .skeleton {
-            animation: pulse 1.5s infinite;
+        /* 커스텀 스크롤바 디자인 (선택 사항) */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        ::-webkit-scrollbar-thumb {
+            background-color: #a8a8a8;
+            border-radius: 10px;
         }
     </style>
 </head>
-<body class="p-4 sm:p-8 min-h-screen flex items-center justify-center">
+<body class="text-gray-800">
 
-    <div id="app" class="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-6 md:p-10 border border-gray-100">
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">
-            🖼️ 블로그 사진 채우기 AI 이미지 생성기
-        </h1>
-        <p class="text-gray-600 mb-6">
-            블로그에 사용할 멋진 이미지를 생성하세요. 사진에 대한 설명을 한국어나 영어로 입력해 주세요.
-        </p>
-
-        <!-- 입력 영역 -->
-        <div class="space-y-4 mb-8">
-            <textarea
-                id="promptInput"
-                placeholder="예: 따뜻한 햇살 아래 바다가 보이는 아늑한 카페에서 커피를 마시는 모습 (고화질, 필름 사진 스타일)"
-                rows="3"
-                class="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 resize-none shadow-sm"
-            ></textarea>
-
-            <button
-                id="generateButton"
-                class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition duration-200 ease-in-out shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                onclick="generateImage()"
-            >
-                이미지 생성하기
+    <!-- Header & Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <!-- Logo/Site Title -->
+            <a href="#" class="text-2xl font-extrabold text-teal-600 tracking-tight">
+                Cho Hyuck's Archive
+            </a>
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="#about" class="text-gray-600 hover:text-teal-600 transition duration-300 font-medium">소개 및 경력</a>
+                <a href="#reviews" class="text-gray-600 hover:text-teal-600 transition duration-300 font-medium">리뷰 (책/영화/제품)</a>
+                <a href="#travel" class="text-gray-600 hover:text-teal-600 transition duration-300 font-medium">여행 및 맛집</a>
+            </nav>
+            <!-- Mobile Menu Button (Placeholder for JS functionality) -->
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-full text-gray-600 hover:bg-gray-100 transition">
+                <i data-lucide="menu" class="w-6 h-6"></i>
             </button>
         </div>
+    </header>
 
-        <!-- 결과 영역 -->
-        <div id="resultContainer">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">생성된 이미지</h2>
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
-            <!-- 이미지 및 로딩/에러 메시지 영역 -->
-            <div id="imageDisplay" class="min-h-72 flex items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl overflow-hidden">
-                <p id="initialMessage" class="text-gray-500 p-4 text-center">
-                    설명을 입력하고 '이미지 생성하기' 버튼을 눌러보세요!
-                </p>
-                <!-- 로딩 스켈레톤 (초기에는 숨김) -->
-                <div id="loadingSkeleton" class="p-4 w-full h-full hidden">
-                    <div class="skeleton bg-gray-300 rounded-xl w-full h-72 mb-4"></div>
-                    <div class="skeleton bg-gray-300 rounded-lg w-3/4 h-5 mx-auto"></div>
-                </div>
-                <!-- 에러 메시지 (초기에는 숨김) -->
-                <div id="errorMessage" class="hidden text-center text-red-600 p-4">
-                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.332 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    <p>이미지 생성에 실패했습니다. 프롬프트를 다시 확인하거나 잠시 후 다시 시도해 주세요.</p>
-                    <p id="errorDetail" class="text-sm mt-1"></p>
-                </div>
-                <!-- 생성된 이미지 (초기에는 숨김) -->
-                <img id="generatedImage" class="w-full h-auto max-h-[500px] object-contain hidden" alt="생성된 이미지">
+        <!-- 1. Hero Section: Welcome & Core Info -->
+        <section id="hero" class="text-center mb-20 p-8 md:p-16 bg-white rounded-3xl shadow-xl border border-gray-100">
+            <div class="w-24 h-24 mx-auto mb-6 bg-teal-100 rounded-full flex items-center justify-center border-4 border-teal-300">
+                <i data-lucide="user" class="w-10 h-10 text-teal-600"></i>
             </div>
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
+                안녕하세요, 조혁입니다.
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                경험과 통찰을 공유하는 개인 아카이브에 오신 것을 환영합니다.
+                <br class="hidden sm:inline">
+                이곳에서 저의 생각과 기록들을 함께 나눠보세요.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-6">
+                <a href="#about" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-teal-600 hover:bg-teal-700 transition duration-300 shadow-lg">
+                    <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i>
+                    소개 및 경력 보기
+                </a>
+                <a href="mailto:hcho6542@gmail.com" class="inline-flex items-center justify-center px-8 py-3 border-2 border-teal-600 text-base font-medium rounded-full text-teal-600 bg-white hover:bg-teal-50 transition duration-300">
+                    <i data-lucide="mail" class="w-4 h-4 mr-2"></i>
+                    hcho6542@gmail.com
+                </a>
+            </div>
+        </section>
 
-            <!-- 다운로드 버튼 (초기에는 숨김) -->
-            <div class="mt-4 text-center">
-                <button
-                    id="downloadButton"
-                    class="hidden px-4 py-2 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition duration-200 ease-in-out shadow-md"
-                    onclick="downloadImage()"
-                >
-                    다운로드 (PNG)
-                </button>
+        <!-- 2. Content Sections -->
+        <div class="space-y-20">
+
+            <!-- 2.1. About Me & Career -->
+            <section id="about" class="p-6 md:p-10 bg-white rounded-2xl shadow-lg border border-teal-100">
+                <h2 class="text-3xl font-bold text-teal-700 mb-6 flex items-center">
+                    <i data-lucide="award" class="w-7 h-7 mr-3 text-teal-500"></i>
+                    소개 및 경력 (About Me & Career)
+                </h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">핵심 정보</h3>
+                        <p class="text-gray-600 mb-4">
+                            이름: 조혁 (Cho Hyuck)
+                        </p>
+                        <p class="text-gray-600">
+                            이메일: <a href="mailto:hcho6542@gmail.com" class="text-teal-600 hover:underline">hcho6542@gmail.com</a>
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">경력 요약 및 목표</h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            (여기는 실제 경력이나 전문 분야에 대한 상세한 설명이 들어갈 공간입니다.)
+                            끊임없이 학습하고 도전하는 자세로, [분야]에서 [구체적인 성과/목표]를 달성하기 위해 노력하고 있습니다. 이 섹션에서 저의 전문성을 더 깊이 확인하실 수 있습니다.
+                        </p>
+                        <a href="#" class="mt-4 inline-flex items-center text-teal-600 hover:text-teal-800 font-medium transition">
+                            경력 상세 페이지로 이동
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2.2. Reviews: Books, Movies, Products -->
+            <section id="reviews">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+                    <i data-lucide="book-open-text" class="w-7 h-7 mr-3 text-red-500"></i>
+                    책, 영화 및 제품 리뷰 (Reviews)
+                </h2>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Review Card 1: Book -->
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300 border-t-4 border-red-500">
+                        <i data-lucide="book-open" class="w-8 h-8 text-red-500 mb-3"></i>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">읽는 즐거움: [책 제목] 리뷰</h3>
+                        <p class="text-gray-600 text-sm mb-4">
+                            인생의 방향을 설정하는 데 도움을 준 심리학 도서 [책 제목]에 대한 깊이 있는 분석과 추천사를 담았습니다.
+                        </p>
+                        <a href="#" class="text-sm font-medium text-red-600 hover:text-red-800 transition">
+                            더 읽어보기 &rarr;
+                        </a>
+                    </div>
+
+                    <!-- Review Card 2: Movie -->
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300 border-t-4 border-red-500">
+                        <i data-lucide="clapperboard" class="w-8 h-8 text-red-500 mb-3"></i>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">감동의 순간: [영화 제목] 감상평</h3>
+                        <p class="text-gray-600 text-sm mb-4">
+                            최근 개봉한 블록버스터 [영화 제목]의 영상미와 스토리텔링에 대한 솔직하고 생생한 후기입니다.
+                        </p>
+                        <a href="#" class="text-sm font-medium text-red-600 hover:text-red-800 transition">
+                            더 읽어보기 &rarr;
+                        </a>
+                    </div>
+
+                    <!-- Review Card 3: Product -->
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300 border-t-4 border-red-500">
+                        <i data-lucide="monitor" class="w-8 h-8 text-red-500 mb-3"></i>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">필수 아이템: [제품 이름] 사용 후기</h3>
+                        <p class="text-gray-600 text-sm mb-4">
+                            일상의 효율성을 높여준 스마트 기기 [제품 이름]의 장단점과 구매 가이드를 자세히 리뷰했습니다.
+                        </p>
+                        <a href="#" class="text-sm font-medium text-red-600 hover:text-red-800 transition">
+                            더 읽어보기 &rarr;
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2.3. Travel & Food Information -->
+            <section id="travel">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+                    <i data-lucide="plane" class="w-7 h-7 mr-3 text-blue-500"></i>
+                    여행 및 맛집 정보 (Travel & Food)
+                </h2>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Travel Card 1 -->
+                    <div class="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
+                        <div class="h-40 bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/81C7D4/ffffff?text=Travel+Photo+1');" aria-label="[Image of Cityscape]"></div>
+                        <div class="p-4">
+                            <span class="text-xs font-semibold text-white bg-blue-500 rounded-full px-2 py-0.5">여행</span>
+                            <h3 class="text-lg font-semibold text-gray-900 mt-2 group-hover:text-blue-600 transition">숨겨진 보석: [유럽 도시] 여행기</h3>
+                            <p class="text-gray-500 text-sm mt-1">인파를 피해 여유롭게 즐긴 힐링 여행 코스.</p>
+                        </div>
+                    </div>
+
+                    <!-- Food Card 2 -->
+                    <div class="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
+                        <div class="h-40 bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/90D189/ffffff?text=Food+Photo+2');" aria-label="[Image of Delicious Food]"></div>
+                        <div class="p-4">
+                            <span class="text-xs font-semibold text-white bg-green-500 rounded-full px-2 py-0.5">맛집</span>
+                            <h3 class="text-lg font-semibold text-gray-900 mt-2 group-hover:text-green-600 transition">인생 파스타: [지역] 맛집 추천</h3>
+                            <p class="text-gray-500 text-sm mt-1">기념일에 가기 좋은 분위기 최고의 레스토랑.</p>
+                        </div>
+                    </div>
+
+                    <!-- Travel Card 3 -->
+                    <div class="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
+                        <div class="h-40 bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/F0B78B/ffffff?text=Travel+Photo+3');" aria-label="[Image of Sunset]"></div>
+                        <div class="p-4">
+                            <span class="text-xs font-semibold text-white bg-blue-500 rounded-full px-2 py-0.5">여행</span>
+                            <h3 class="text-lg font-semibold text-gray-900 mt-2 group-hover:text-blue-600 transition">혼자 떠나는 제주도 캠핑</h3>
+                            <p class="text-gray-500 text-sm mt-1">제주도의 자연을 만끽하는 나만의 시간 기록.</p>
+                        </div>
+                    </div>
+
+                    <!-- Food Card 4 -->
+                    <div class="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
+                        <div class="h-40 bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/D49A81/ffffff?text=Food+Photo+4');" aria-label="[Image of Coffee]"></div>
+                        <div class="p-4">
+                            <span class="text-xs font-semibold text-white bg-green-500 rounded-full px-2 py-0.5">맛집</span>
+                            <h3 class="text-lg font-semibold text-gray-900 mt-2 group-hover:text-green-600 transition">최애 카페 리스트: 커피 마니아</h3>
+                            <p class="text-gray-500 text-sm mt-1">작업하기 좋은 서울/수도권 카페 5곳 추천.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-10">
+                    <a href="#" class="inline-flex items-center justify-center px-10 py-3 border border-transparent text-lg font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 transition duration-300 shadow-xl">
+                        전체 여행 & 맛집 포스팅 보기
+                    </a>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="text-center md:text-left">
+                    <p class="text-xl font-bold text-white mb-2">Cho Hyuck's Archive</p>
+                    <p class="text-gray-400">경험과 통찰을 기록하고 공유합니다.</p>
+                </div>
+                <div class="mt-8 md:mt-0 flex flex-col items-center md:items-end space-y-2">
+                    <a href="mailto:hcho6542@gmail.com" class="text-teal-400 hover:text-teal-300 transition flex items-center">
+                        <i data-lucide="mail" class="w-4 h-4 mr-2"></i>
+                        hcho6542@gmail.com
+                    </a>
+                    <p class="text-gray-500 text-sm">&copy; 2024 Cho Hyuck. All rights reserved.</p>
+                </div>
             </div>
         </div>
-    </div>
+    </footer>
 
+    <!-- JavaScript for Mobile Menu & Icons -->
     <script>
-        // Firestore 및 Auth 환경 변수 (사용되지 않음, 이미지 생성은 외부 API 호출)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        // Lucide Icons Render
+        lucide.createIcons();
 
-        const promptInput = document.getElementById('promptInput');
-        const generateButton = document.getElementById('generateButton');
-        const initialMessage = document.getElementById('initialMessage');
-        const imageDisplay = document.getElementById('imageDisplay');
-        const loadingSkeleton = document.getElementById('loadingSkeleton');
-        const errorMessage = document.getElementById('errorMessage');
-        const errorDetail = document.getElementById('errorDetail');
-        const generatedImage = document.getElementById('generatedImage');
-        const downloadButton = document.getElementById('downloadButton');
-
-        // 이미지 생성 API 관련 설정
-        // **주의: 이미지를 생성할 때는 'imagen-4.0-generate-001' 모델을 사용합니다.**
-        const API_KEY = ""; // 런타임에 자동으로 제공됩니다.
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${API_KEY}`;
-        
-        let currentImageUrl = null; // 생성된 이미지의 Base64 URL 저장
-
-        /**
-         * 이미지 생성 요청을 API에 전송하고 결과를 처리합니다.
-         */
-        async function generateImage() {
-            const prompt = promptInput.value.trim();
-
-            if (!prompt) {
-                alertUser('프롬프트를 입력해 주세요.', 'warning');
-                return;
-            }
-
-            // UI 상태 초기화 및 로딩 시작
-            resetUI();
-            generateButton.disabled = true;
-            loadingSkeleton.classList.remove('hidden');
-            initialMessage.classList.add('hidden');
-            imageDisplay.classList.remove('border-dashed', 'border-gray-300');
-
-
-            // API 요청 페이로드
-            const payload = {
-                instances: [{ prompt: prompt }],
-                parameters: {
-                    sampleCount: 1, // 생성할 이미지 개수
-                    // 이미지 품질 및 크기 설정 (블로그에 적합하게 1:1 비율 선택)
-                    aspectRatio: "1:1",
-                    outputMimeType: "image/png"
-                }
-            };
-
-            // 지수 백오프를 위한 설정
-            const MAX_RETRIES = 5;
-            let currentRetry = 0;
-
-            while (currentRetry < MAX_RETRIES) {
-                try {
-                    const response = await fetch(API_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error?.message || `API 요청 실패: ${response.statusText}`);
-                    }
-
-                    const result = await response.json();
-                    
-                    const base64Data = result?.predictions?.[0]?.bytesBase64Encoded;
-
-                    if (!base64Data) {
-                        throw new Error("이미지 데이터가 응답에 포함되어 있지 않습니다.");
-                    }
-
-                    // Base64 데이터를 이미지 URL로 변환
-                    currentImageUrl = `data:image/png;base64,${base64Data}`;
-                    generatedImage.src = currentImageUrl;
-
-                    // UI 업데이트
-                    loadingSkeleton.classList.add('hidden');
-                    generatedImage.classList.remove('hidden');
-                    downloadButton.classList.remove('hidden');
-                    imageDisplay.classList.add('p-0'); // 이미지 채우기를 위해 패딩 제거
-
-                    break; // 성공 시 루프 종료
-
-                } catch (error) {
-                    console.error("이미지 생성 오류:", error.message);
-                    currentRetry++;
-
-                    if (currentRetry < MAX_RETRIES) {
-                        // 지수 백오프: 1초, 2초, 4초 ... 대기
-                        const delay = Math.pow(2, currentRetry) * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        // console.log(`재시도 (${currentRetry}/${MAX_RETRIES}). ${delay / 1000}초 대기 후 다시 시도합니다.`);
-                    } else {
-                        // 최대 재시도 횟수 초과
-                        handleError(error.message);
-                        break;
-                    }
-                }
-            }
-            
-            generateButton.disabled = false;
-        }
-
-        /**
-         * UI 상태를 초기 메시지 상태로 재설정합니다.
-         */
-        function resetUI() {
-            generatedImage.classList.add('hidden');
-            loadingSkeleton.classList.add('hidden');
-            errorMessage.classList.add('hidden');
-            downloadButton.classList.add('hidden');
-            imageDisplay.classList.add('border-dashed', 'border-gray-300');
-            imageDisplay.classList.remove('p-0');
-            initialMessage.classList.add('hidden');
-            errorDetail.textContent = '';
-            currentImageUrl = null;
-        }
-
-        /**
-         * 에러 메시지를 표시하고 UI 상태를 업데이트합니다.
-         * @param {string} message - 표시할 에러 메시지
-         */
-        function handleError(message) {
-            loadingSkeleton.classList.add('hidden');
-            errorMessage.classList.remove('hidden');
-            errorDetail.textContent = `(${message.substring(0, 100)}...)`;
-            imageDisplay.classList.add('border-dashed', 'border-gray-300');
-            imageDisplay.classList.remove('p-0');
-            generatedImage.classList.add('hidden');
-            initialMessage.classList.add('hidden');
-        }
-
-        /**
-         * 사용자에게 메시지 (경고 등)를 표시하는 커스텀 모달 함수입니다.
-         * window.alert() 사용 금지 규정에 따라 커스텀 UI를 사용합니다.
-         * @param {string} message - 사용자에게 표시할 메시지
-         * @param {string} type - 메시지 유형 ('warning', 'info' 등)
-         */
-        function alertUser(message, type) {
-            // 실제 환경에서는 사용자에게 보이는 모달 UI를 구현해야 합니다.
-            
-            // 변경: console.error 대신 console.warn을 사용하여 심각한 오류와 구분
-            if (type === 'warning') {
-                console.warn(`[사용자 알림 - WARNING]: ${message}`);
-            } else {
-                console.info(`[사용자 알림 - INFO]: ${message}`);
-            }
-
-            // 사용자에게 보일 수 있는 임시 메시지 표시
-            let tempMessage = document.getElementById('tempAlertMessage');
-            if (tempMessage) {
-                tempMessage.remove(); // 이전 메시지 제거
-            }
-
-            tempMessage = document.createElement('p');
-            tempMessage.id = 'tempAlertMessage';
-            tempMessage.textContent = message;
-
-            // 메시지 유형에 따른 배경색 설정
-            const bgColor = type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
-
-            tempMessage.className = `fixed top-0 left-1/2 -translate-x-1/2 max-w-sm w-full ${bgColor} text-white p-3 text-center rounded-b-lg shadow-xl z-50 transition-all duration-300 transform opacity-0 scale-95`;
-            
-            document.body.appendChild(tempMessage);
-
-            // 애니메이션을 통해 메시지 표시
-            setTimeout(() => {
-                tempMessage.style.opacity = '1';
-                tempMessage.style.transform = 'translate(-50%, 0) scale(1)';
-            }, 10);
-
-            // 3초 후 애니메이션을 통해 메시지 제거
-            setTimeout(() => {
-                tempMessage.style.opacity = '0';
-                tempMessage.style.transform = 'translate(-50%, -100%) scale(0.95)';
-                setTimeout(() => {
-                    tempMessage.remove();
-                }, 300); // 전환이 끝날 때까지 대기
-            }, 3000);
-        }
-        
-        /**
-         * 생성된 이미지를 다운로드합니다.
-         */
-        function downloadImage() {
-            if (currentImageUrl) {
-                const link = document.createElement('a');
-                link.href = currentImageUrl;
-                // 파일 이름을 프롬프트 기반으로 설정하거나 기본 이름 사용
-                const promptPreview = promptInput.value.trim().substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_') || 'ai_generated_image';
-                link.download = `${promptPreview}_${Date.now()}.png`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } else {
-                alertUser('다운로드할 이미지가 없습니다.', 'info');
-            }
-        }
+        // Simple Mobile Menu Toggle (Functionality Placeholder)
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        // If a mobile menu were implemented, the following code would toggle its visibility:
+        // mobileMenuButton.addEventListener('click', () => {
+        //     const mobileMenu = document.getElementById('mobile-menu');
+        //     mobileMenu.classList.toggle('hidden');
+        // });
     </script>
 </body>
 </html>
