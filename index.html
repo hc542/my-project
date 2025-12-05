@@ -3,245 +3,778 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>조혁의 아카이브 - 개인 웹 블로그 홈</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Icon Library (Lucide) -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>HYUCK's Blog | 최신 기술과 디자인 트렌드</title>
+    
+    <!-- 폰트 및 아이콘 라이브러리 로드 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- CSS (style.css 통합) -->
     <style>
-        /* 기본 폰트를 Inter로 설정 */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        /* ------------------------------------------- */
+        /* 1. CSS 변수 및 기본 스타일 (다크/라이트 테마) */
+        /* ------------------------------------------- */
+
+        /* Light Theme Variables (Default) */
+        :root {
+            --color-primary: #007bff;          /* Blue */
+            --color-text: #1a1a1a;             /* Dark Gray */
+            --color-background: #ffffff;       /* White */
+            --color-secondary-bg: #f5f5f5;     /* Light Gray for cards */
+            --color-border: #e0e0e0;           /* Subtle border */
+            --color-link-hover: #0056b3;
+            --color-meta: #6c757d;             /* Muted text */
+            --shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Dark Theme Variables */
+        body.dark-theme {
+            --color-primary: #8ab4f8;          /* Light Blue */
+            --color-text: #e8e8e8;             /* Light Gray */
+            --color-background: #1e1e1e;       /* Dark Background */
+            --color-secondary-bg: #2d2d2d;     /* Darker background for cards */
+            --color-border: #3c3c3c;           /* Subtle dark border */
+            --color-link-hover: #a5c3fc;
+            --color-meta: #b0b0b0;
+            --shadow-subtle: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Global Reset and Typography */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f7f9fb; /* 아주 연한 배경 */
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: var(--color-text);
+            background-color: var(--color-background);
+            transition: background-color 0.3s, color 0.3s;
         }
-        /* 커스텀 스크롤바 디자인 (선택 사항) */
-        ::-webkit-scrollbar {
-            width: 8px;
+
+        a {
+            color: var(--color-text);
+            text-decoration: none;
+            transition: color 0.2s;
         }
-        ::-webkit-scrollbar-thumb {
-            background-color: #a8a8a8;
-            border-radius: 10px;
+
+        a:hover {
+            color: var(--color-primary);
+        }
+
+        /* ------------------------------------------- */
+        /* 2. HEADER & NAVIGATION 스타일 */
+        /* ------------------------------------------- */
+
+        .main-header {
+            background-color: var(--color-background);
+            border-bottom: 1px solid var(--color-border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .main-nav {
+            /* Mobile: Hidden by default, toggled by JS */
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: var(--color-background);
+            border-top: 1px solid var(--color-border);
+            padding: 1rem 0;
+        }
+
+        .main-nav.open {
+            display: block;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-list li a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .nav-list li a:hover {
+            color: var(--color-primary);
+            background-color: var(--color-secondary-bg);
+        }
+        
+        /* 현재 활성화된 페이지 링크 스타일 (선택 사항) */
+        .nav-list li a.active-link {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .utility-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .utility-btn {
+            background: none;
+            border: none;
+            color: var(--color-text);
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .utility-btn:hover {
+            color: var(--color-primary);
+        }
+
+        /* ------------------------------------------- */
+        /* 3. MAIN CONTENT & SECTIONS 스타일 */
+        /* ------------------------------------------- */
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .content-section {
+            padding-top: 2rem;
+            padding-bottom: 4rem;
+        }
+
+        .content-section.hidden {
+            display: none;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--color-text);
+            border-bottom: 2px solid var(--color-primary);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .section-description {
+            margin-bottom: 2rem;
+            color: var(--color-meta);
+        }
+
+        /* ------------------------------------------- */
+        /* 4. FEATURED POST 스타일 */
+        /* ------------------------------------------- */
+
+        .featured-post {
+            display: flex;
+            flex-direction: column; /* Mobile: Stacked */
+            background-color: var(--color-secondary-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-subtle);
+            transition: transform 0.3s;
+        }
+
+        .featured-post:hover {
+            transform: translateY(-5px);
+        }
+
+        .featured-image {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: cover;
+        }
+
+        .featured-post .post-content {
+            padding: 1.5rem;
+        }
+
+        .featured-post .post-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        /* ------------------------------------------- */
+        /* 5. POST GRID & CARD 스타일 */
+        /* ------------------------------------------- */
+
+        .post-grid {
+            display: grid;
+            /* Mobile: 1 Column */
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .post-card {
+            background-color: var(--color-secondary-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-subtle);
+            transition: transform 0.3s;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .post-card .post-content {
+            padding: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .post-category {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .post-meta {
+            font-size: 0.85rem;
+            color: var(--color-meta);
+            margin-top: 0.75rem;
+        }
+
+        .post-excerpt {
+            font-size: 0.95rem;
+            color: var(--color-text);
+            /* 2줄 말줄임표 처리 */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ------------------------------------------- */
+        /* 6. ABOUT SECTION 스타일 */
+        /* ------------------------------------------- */
+
+        .about-card {
+            background-color: var(--color-secondary-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-subtle);
+            text-align: center;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1.5rem;
+            border: 4px solid var(--color-primary);
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .contact-info p {
+            margin: 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        .contact-info .fas, .contact-info .fab {
+            margin-right: 0.5rem;
+            color: var(--color-primary);
+        }
+
+        /* ------------------------------------------- */
+        /* 7. FOOTER 스타일 */
+        /* ------------------------------------------- */
+
+        .main-footer {
+            background-color: var(--color-secondary-bg);
+            border-top: 1px solid var(--color-border);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            color: var(--color-meta);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-nav a {
+            margin: 0 0.75rem;
+            font-size: 0.9rem;
+            color: var(--color-meta);
+        }
+
+        .footer-nav a:hover {
+            color: var(--color-primary);
+        }
+
+        .social-links {
+            margin: 1rem 0;
+        }
+
+        .social-links a {
+            font-size: 1.25rem;
+            margin: 0 0.5rem;
+            color: var(--color-meta);
+        }
+
+        .social-links a:hover {
+            color: var(--color-primary);
+        }
+
+        .copyright {
+            font-size: 0.85rem;
+        }
+
+
+        /* ------------------------------------------- */
+        /* 8. 미디어 쿼리 (반응형 브레이크포인트) */
+        /* ------------------------------------------- */
+
+        /* Tablet (min-width: 768px) */
+        @media (min-width: 768px) {
+            
+            /* [BREAKPOINT: TABLET] HEADER */
+            .main-nav {
+                /* Tablet/Desktop: Visible in the main flow */
+                display: block;
+                position: static;
+                border-top: none;
+                padding: 0;
+            }
+
+            .nav-list {
+                flex-direction: row;
+                gap: 1.5rem;
+            }
+
+            .nav-list li a {
+                padding: 0;
+            }
+
+            .main-nav.open {
+                display: flex;
+            }
+
+            .menu-btn {
+                /* Hide mobile menu toggle on tablet/desktop */
+                display: none;
+            }
+
+            /* [BREAKPOINT: TABLET] FEATURED POST */
+            .featured-post {
+                flex-direction: row;
+            }
+
+            .featured-post .post-image-container {
+                flex: 1;
+            }
+
+            .featured-post .post-content {
+                flex: 1;
+                padding: 2rem;
+            }
+
+            .featured-image {
+                /* Height adjustment for side-by-side layout */
+                height: 100%; 
+                max-height: none;
+            }
+            
+            /* [BREAKPOINT: TABLET] POST GRID */
+            .post-grid {
+                /* Tablet: 2 Columns */
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Desktop (min-width: 1024px) */
+        @media (min-width: 1024px) {
+            /* [BREAKPOINT: DESKTOP] POST GRID */
+            .post-grid {
+                /* Desktop: 3 Columns */
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
     </style>
 </head>
-<body class="text-gray-800">
-
-    <!-- Header & Navigation -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <!-- Logo/Site Title -->
-            <a href="#" class="text-2xl font-extrabold text-teal-600 tracking-tight">
-                Cho Hyuck's Archive
-            </a>
-            <!-- Desktop Navigation -->
-            <nav class="hidden md:flex space-x-8">
-                <a href="#about" class="text-gray-600 hover:text-teal-600 transition duration-300 font-medium">소개 및 경력</a>
-                <a href="#reviews" class="text-gray-600 hover:text-teal-600 transition duration-300 font-medium">리뷰 (책/영화/제품)</a>
-                <a href="#travel" class="text-gray-600 hover:text-teal-600 transition duration-300 font-medium">여행 및 맛집</a>
+<body class="light-theme">
+    
+    <!-- HEADER SECTION: 로고, GNB, 유틸리티 버튼 -->
+    <header class="main-header">
+        <div class="header-content">
+            <a href="#home" class="logo">HYUCK's Blog</a>
+            
+            <nav class="main-nav">
+                <ul class="nav-list" id="nav-list">
+                    <li><a href="#home">홈</a></li>
+                    <li><a href="#tech">기술</a></li>
+                    <li><a href="#design">디자인</a></li>
+                    <li><a href="#about">소개</a></li>
+                </ul>
             </nav>
-            <!-- Mobile Menu Button (Placeholder for JS functionality) -->
-            <button id="mobile-menu-button" class="md:hidden p-2 rounded-full text-gray-600 hover:bg-gray-100 transition">
-                <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
+
+            <div class="utility-buttons">
+                <!-- 다크 모드/라이트 모드 토글 -->
+                <button id="theme-toggle" aria-label="테마 전환" class="utility-btn">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <!-- 모바일 메뉴 토글 버튼 -->
+                <button id="menu-toggle" aria-label="메뉴 토글" class="utility-btn menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <main>
+        <!-- HOME SECTION: Featured Post 및 포스트 그리드 -->
+        <section id="home" class="content-section home-section active">
+            <h2 class="section-title">최신 포스트</h2>
+            
+            <!-- FEATURED POST: 가장 중요한 포스트 강조 -->
+            <article class="featured-post">
+                <div class="post-image-container">
+                    <!-- 테스트 이미지 플레이스홀더 -->
+                    <img src="https://via.placeholder.com/1200x600?text=Featured+Image" alt="최신 포스트 이미지" class="featured-image">
+                </div>
+                <div class="post-content">
+                    <span class="post-category">기술</span>
+                    <h3 class="post-title"><a href="#">2024년, JavaScript 비동기 처리의 최신 트렌드와 패턴</a></h3>
+                    <p class="post-excerpt">async/await부터 최신 Web Worker 패턴까지, 고성능 애플리케이션을 위한 자바스크립트 비동기 처리 기법들을 심층적으로 분석합니다.</p>
+                    <div class="post-meta">
+                        <span>HYUCK</span> | <time datetime="2024-11-28">2024년 11월 28일</time>
+                    </div>
+                </div>
+            </article>
 
-        <!-- 1. Hero Section: Welcome & Core Info -->
-        <section id="hero" class="text-center mb-20 p-8 md:p-16 bg-white rounded-3xl shadow-xl border border-gray-100">
-            <div class="w-24 h-24 mx-auto mb-6 bg-teal-100 rounded-full flex items-center justify-center border-4 border-teal-300">
-                <i data-lucide="user" class="w-10 h-10 text-teal-600"></i>
-            </div>
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
-                안녕하세요, 조혁입니다.
-            </h1>
-            <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                경험과 통찰을 공유하는 개인 아카이브에 오신 것을 환영합니다.
-                <br class="hidden sm:inline">
-                이곳에서 저의 생각과 기록들을 함께 나눠보세요.
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-6">
-                <a href="#about" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-teal-600 hover:bg-teal-700 transition duration-300 shadow-lg">
-                    <i data-lucide="briefcase" class="w-4 h-4 mr-2"></i>
-                    소개 및 경력 보기
-                </a>
-                <a href="mailto:hcho6542@gmail.com" class="inline-flex items-center justify-center px-8 py-3 border-2 border-teal-600 text-base font-medium rounded-full text-teal-600 bg-white hover:bg-teal-50 transition duration-300">
-                    <i data-lucide="mail" class="w-4 h-4 mr-2"></i>
-                    hcho6542@gmail.com
-                </a>
+            <!-- POST GRID: 3열 구조의 최근 포스트 목록 -->
+            <div class="post-grid">
+                <!-- 포스트 카드 1 -->
+                <article class="post-card">
+                    <div class="post-image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Post+Image+1" alt="포스트 이미지" class="card-image">
+                    </div>
+                    <div class="post-content">
+                        <span class="post-category">디자인</span>
+                        <h4 class="card-title"><a href="#">미니멀리즘 웹 디자인의 5가지 핵심 원칙</a></h4>
+                        <p class="post-excerpt">여백의 미를 살리고 사용자 경험을 극대화하는 미니멀 디자인 전략.</p>
+                        <div class="post-meta"><time datetime="2024-11-25">2024년 11월 25일</time></div>
+                    </div>
+                </article>
+                <!-- 포스트 카드 2 -->
+                <article class="post-card">
+                    <div class="post-image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Post+Image+2" alt="포스트 이미지" class="card-image">
+                    </div>
+                    <div class="post-content">
+                        <span class="post-category">기술</span>
+                        <h4 class="card-title"><a href="#">Docker와 Kubernetes를 활용한 마이크로서비스 구축</a></h4>
+                        <p class="post-excerpt">컨테이너 기반 배포 환경을 위한 필수 지식과 실전 팁 공유.</p>
+                        <div class="post-meta"><time datetime="2024-11-22">2024년 11월 22일</time></div>
+                    </div>
+                </article>
+                <!-- 포스트 카드 3 -->
+                <article class="post-card">
+                    <div class="post-image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Post+Image+3" alt="포스트 이미지" class="card-image">
+                    </div>
+                    <div class="post-content">
+                        <span class="post-category">기술</span>
+                        <h4 class="card-title"><a href="#">Rust 언어, 왜 주목해야 하는가? 성능과 안정성 분석</a></h4>
+                        <p class="post-excerpt">시스템 프로그래밍의 미래, 러스트의 장단점을 깊이 있게 탐구합니다.</p>
+                        <div class="post-meta"><time datetime="2024-11-18">2024년 11월 18일</time></div>
+                    </div>
+                </article>
+                <!-- 포스트 카드 4 -->
+                <article class="post-card">
+                    <div class="post-image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Post+Image+4" alt="포스트 이미지" class="card-image">
+                    </div>
+                    <div class="post-content">
+                        <span class="post-category">디자인</span>
+                        <h4 class="card-title"><a href="#">사용자 경험(UX)을 개선하는 5가지 인터랙션 기술</a></h4>
+                        <p class="post-excerpt">애니메이션, 피드백 등 사용자를 사로잡는 인터랙션 요소 분석.</p>
+                        <div class="post-meta"><time datetime="2024-11-15">2024년 11월 15일</time></div>
+                    </div>
+                </article>
+                <!-- 포스트 카드 5 -->
+                <article class="post-card">
+                    <div class="post-image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Post+Image+5" alt="포스트 이미지" class="card-image">
+                    </div>
+                    <div class="post-content">
+                        <span class="post-category">기술</span>
+                        <h4 class="card-title"><a href="#">Next.js 14 서버 컴포넌트 완벽 가이드</a></h4>
+                        <p class="post-excerpt">모던 웹 프레임워크 Next.js의 핵심 기능인 RSC를 마스터하세요.</p>
+                        <div class="post-meta"><time datetime="2024-11-10">2024년 11월 10일</time></div>
+                    </div>
+                </article>
+                <!-- 포스트 카드 6 -->
+                <article class="post-card">
+                    <div class="post-image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Post+Image+6" alt="포스트 이미지" class="card-image">
+                    </div>
+                    <div class="post-content">
+                        <span class="post-category">디자인</span>
+                        <h4 class="card-title"><a href="#">접근성(Accessibility)을 고려한 웹사이트 구축 방법</a></h4>
+                        <p class="post-excerpt">모두를 위한 웹 환경을 만드는 AA 등급 이상의 접근성 준수 사항.</p>
+                        <div class="post-meta"><time datetime="2024-11-05">2024년 11월 05일</time></div>
+                    </div>
+                </article>
             </div>
         </section>
 
-        <!-- 2. Content Sections -->
-        <div class="space-y-20">
-
-            <!-- 2.1. About Me & Career -->
-            <section id="about" class="p-6 md:p-10 bg-white rounded-2xl shadow-lg border border-teal-100">
-                <h2 class="text-3xl font-bold text-teal-700 mb-6 flex items-center">
-                    <i data-lucide="award" class="w-7 h-7 mr-3 text-teal-500"></i>
-                    소개 및 경력 (About Me & Career)
-                </h2>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">핵심 정보</h3>
-                        <p class="text-gray-600 mb-4">
-                            이름: 조혁 (Cho Hyuck)
-                        </p>
-                        <p class="text-gray-600">
-                            이메일: <a href="mailto:hcho6542@gmail.com" class="text-teal-600 hover:underline">hcho6542@gmail.com</a>
-                        </p>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">경력 요약 및 목표</h3>
-                        <p class="text-gray-700 leading-relaxed">
-                            (여기는 실제 경력이나 전문 분야에 대한 상세한 설명이 들어갈 공간입니다.)
-                            끊임없이 학습하고 도전하는 자세로, [분야]에서 [구체적인 성과/목표]를 달성하기 위해 노력하고 있습니다. 이 섹션에서 저의 전문성을 더 깊이 확인하실 수 있습니다.
-                        </p>
-                        <a href="#" class="mt-4 inline-flex items-center text-teal-600 hover:text-teal-800 font-medium transition">
-                            경력 상세 페이지로 이동
-                            <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
-                        </a>
+        <!-- TECH SECTION: 기술 포스트 목록 (SPA 구성의 예시) -->
+        <section id="tech" class="content-section tech-section hidden">
+            <h2 class="section-title">기술 (Tech)</h2>
+            <p class="section-description">프로그래밍 언어, 프레임워크, 시스템 아키텍처 등 기술 관련 포스트를 모아봅니다.</p>
+            <!-- 실제 블로그에서는 이 섹션에 기술 포스트만 필터링하여 배치합니다. -->
+            <div class="post-grid">
+                <!-- 예시 포스트 (콘텐츠 생략) -->
+                <div class="post-card">
+                    <div class="post-content">
+                        <h4 class="card-title"><a href="#">기술 포스트 샘플 1</a></h4>
+                        <p class="post-excerpt">기술 관련 내용을 여기에 채워 넣으세요.</p>
                     </div>
                 </div>
-            </section>
-
-            <!-- 2.2. Reviews: Books, Movies, Products -->
-            <section id="reviews">
-                <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
-                    <i data-lucide="book-open-text" class="w-7 h-7 mr-3 text-red-500"></i>
-                    책, 영화 및 제품 리뷰 (Reviews)
-                </h2>
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Review Card 1: Book -->
-                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300 border-t-4 border-red-500">
-                        <i data-lucide="book-open" class="w-8 h-8 text-red-500 mb-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">읽는 즐거움: [책 제목] 리뷰</h3>
-                        <p class="text-gray-600 text-sm mb-4">
-                            인생의 방향을 설정하는 데 도움을 준 심리학 도서 [책 제목]에 대한 깊이 있는 분석과 추천사를 담았습니다.
-                        </p>
-                        <a href="#" class="text-sm font-medium text-red-600 hover:text-red-800 transition">
-                            더 읽어보기 &rarr;
-                        </a>
+                <div class="post-card">
+                    <div class="post-content">
+                        <h4 class="card-title"><a href="#">기술 포스트 샘플 2</a></h4>
+                        <p class="post-excerpt">기술 관련 내용을 여기에 채워 넣으세요.</p>
                     </div>
-
-                    <!-- Review Card 2: Movie -->
-                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300 border-t-4 border-red-500">
-                        <i data-lucide="clapperboard" class="w-8 h-8 text-red-500 mb-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">감동의 순간: [영화 제목] 감상평</h3>
-                        <p class="text-gray-600 text-sm mb-4">
-                            최근 개봉한 블록버스터 [영화 제목]의 영상미와 스토리텔링에 대한 솔직하고 생생한 후기입니다.
-                        </p>
-                        <a href="#" class="text-sm font-medium text-red-600 hover:text-red-800 transition">
-                            더 읽어보기 &rarr;
-                        </a>
-                    </div>
-
-                    <!-- Review Card 3: Product -->
-                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300 border-t-4 border-red-500">
-                        <i data-lucide="monitor" class="w-8 h-8 text-red-500 mb-3"></i>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">필수 아이템: [제품 이름] 사용 후기</h3>
-                        <p class="text-gray-600 text-sm mb-4">
-                            일상의 효율성을 높여준 스마트 기기 [제품 이름]의 장단점과 구매 가이드를 자세히 리뷰했습니다.
-                        </p>
-                        <a href="#" class="text-sm font-medium text-red-600 hover:text-red-800 transition">
-                            더 읽어보기 &rarr;
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 2.3. Travel & Food Information -->
-            <section id="travel">
-                <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
-                    <i data-lucide="plane" class="w-7 h-7 mr-3 text-blue-500"></i>
-                    여행 및 맛집 정보 (Travel & Food)
-                </h2>
-                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Travel Card 1 -->
-                    <div class="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
-                        <div class="h-40 bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/81C7D4/ffffff?text=Travel+Photo+1');" aria-label="[Image of Cityscape]"></div>
-                        <div class="p-4">
-                            <span class="text-xs font-semibold text-white bg-blue-500 rounded-full px-2 py-0.5">여행</span>
-                            <h3 class="text-lg font-semibold text-gray-900 mt-2 group-hover:text-blue-600 transition">숨겨진 보석: [유럽 도시] 여행기</h3>
-                            <p class="text-gray-500 text-sm mt-1">인파를 피해 여유롭게 즐긴 힐링 여행 코스.</p>
-                        </div>
-                    </div>
-
-                    <!-- Food Card 2 -->
-                    <div class="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
-                        <div class="h-40 bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/90D189/ffffff?text=Food+Photo+2');" aria-label="[Image of Delicious Food]"></div>
-                        <div class="p-4">
-                            <span class="text-xs font-semibold text-white bg-green-500 rounded-full px-2 py-0.5">맛집</span>
-                            <h3 class="text-lg font-semibold text-gray-900 mt-2 group-hover:text-green-600 transition">인생 파스타: [지역] 맛집 추천</h3>
-                            <p class="text-gray-500 text-sm mt-1">기념일에 가기 좋은 분위기 최고의 레스토랑.</p>
-                        </div>
-                    </div>
-
-                    <!-- Travel Card 3 -->
-                    <div class="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
-                        <div class="h-40 bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/F0B78B/ffffff?text=Travel+Photo+3');" aria-label="[Image of Sunset]"></div>
-                        <div class="p-4">
-                            <span class="text-xs font-semibold text-white bg-blue-500 rounded-full px-2 py-0.5">여행</span>
-                            <h3 class="text-lg font-semibold text-gray-900 mt-2 group-hover:text-blue-600 transition">혼자 떠나는 제주도 캠핑</h3>
-                            <p class="text-gray-500 text-sm mt-1">제주도의 자연을 만끽하는 나만의 시간 기록.</p>
-                        </div>
-                    </div>
-
-                    <!-- Food Card 4 -->
-                    <div class="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
-                        <div class="h-40 bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/D49A81/ffffff?text=Food+Photo+4');" aria-label="[Image of Coffee]"></div>
-                        <div class="p-4">
-                            <span class="text-xs font-semibold text-white bg-green-500 rounded-full px-2 py-0.5">맛집</span>
-                            <h3 class="text-lg font-semibold text-gray-900 mt-2 group-hover:text-green-600 transition">최애 카페 리스트: 커피 마니아</h3>
-                            <p class="text-gray-500 text-sm mt-1">작업하기 좋은 서울/수도권 카페 5곳 추천.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center mt-10">
-                    <a href="#" class="inline-flex items-center justify-center px-10 py-3 border border-transparent text-lg font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 transition duration-300 shadow-xl">
-                        전체 여행 & 맛집 포스팅 보기
-                    </a>
-                </div>
-            </section>
-
-        </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-            <div class="md:flex md:items-center md:justify-between">
-                <div class="text-center md:text-left">
-                    <p class="text-xl font-bold text-white mb-2">Cho Hyuck's Archive</p>
-                    <p class="text-gray-400">경험과 통찰을 기록하고 공유합니다.</p>
-                </div>
-                <div class="mt-8 md:mt-0 flex flex-col items-center md:items-end space-y-2">
-                    <a href="mailto:hcho6542@gmail.com" class="text-teal-400 hover:text-teal-300 transition flex items-center">
-                        <i data-lucide="mail" class="w-4 h-4 mr-2"></i>
-                        hcho6542@gmail.com
-                    </a>
-                    <p class="text-gray-500 text-sm">&copy; 2024 Cho Hyuck. All rights reserved.</p>
                 </div>
             </div>
+        </section>
+
+        <!-- DESIGN SECTION: 디자인 포스트 목록 (SPA 구성의 예시) -->
+        <section id="design" class="content-section design-section hidden">
+            <h2 class="section-title">디자인 (Design)</h2>
+            <p class="section-description">UI/UX, 트렌드, 타이포그래피 등 디자인 관련 포스트를 모아봅니다.</p>
+             <!-- 실제 블로그에서는 이 섹션에 디자인 포스트만 필터링하여 배치합니다. -->
+            <div class="post-grid">
+                <!-- 예시 포스트 (콘텐츠 생략) -->
+                <div class="post-card">
+                    <div class="post-content">
+                        <h4 class="card-title"><a href="#">디자인 포스트 샘플 1</a></h4>
+                        <p class="post-excerpt">디자인 관련 내용을 여기에 채워 넣으세요.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION: 소개 페이지 (SPA 구성의 예시) -->
+        <section id="about" class="content-section about-section hidden">
+            <h2 class="section-title">소개 (About HYUCK)</h2>
+            <div class="about-card">
+                <img src="https://via.placeholder.com/150?text=Profile" alt="프로필 사진" class="profile-image">
+                <p class="intro-text">
+                    안녕하세요, 개발과 디자인에 열정을 가진 HYUCK입니다.
+                    이곳은 제가 경험한 최신 기술 트렌드와 미니멀한 디자인 철학을 공유하는 공간입니다.
+                </p>
+                <div class="contact-info">
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:hcho6542@gmail.com">hcho6542@gmail.com</a></p>
+                    <p><i class="fab fa-github"></i> <a href="https://github.com/hc542" target="_blank">github.com/hc542</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER SECTION: 저작권 및 소셜 미디어 링크 -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-nav">
+                <a href="#home">홈</a>
+                <a href="#tech">기술</a>
+                <a href="#design">디자인</a>
+                <a href="#about">소개</a>
+            </div>
+            <div class="social-links">
+                <a href="https://github.com/hc542" target="_blank" aria-label="Github"><i class="fab fa-github"></i></a>
+                <a href="mailto:hcho6542@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+            </div>
+            <p class="copyright">&copy; <span id="current-year"></span> HYUCK. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- JavaScript for Mobile Menu & Icons -->
+    <!-- JavaScript (script.js 통합) -->
     <script>
-        // Lucide Icons Render
-        lucide.createIcons();
+        // DOMContentLoaded 이벤트 발생 시 초기화 함수 실행
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+        });
 
-        // Simple Mobile Menu Toggle (Functionality Placeholder)
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        // If a mobile menu were implemented, the following code would toggle its visibility:
-        // mobileMenuButton.addEventListener('click', () => {
-        //     const mobileMenu = document.getElementById('mobile-menu');
-        //     mobileMenu.classList.toggle('hidden');
-        // });
+        /**
+         * 애플리케이션 초기화 및 이벤트 리스너 설정
+         */
+        function initApp() {
+            // 1. DOM 요소 선택
+            const menuToggle = document.getElementById('menu-toggle');
+            const navList = document.getElementById('nav-list');
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            // navList가 존재하지 않을 경우를 대비하여 null 체크를 수행합니다.
+            const navLinks = navList ? navList.querySelectorAll('a') : [];
+
+            // 2. 현재 연도 업데이트 (푸터용)
+            const currentYear = document.getElementById('current-year');
+            if (currentYear) {
+                currentYear.textContent = new Date().getFullYear();
+            }
+
+            // 3. 테마 설정 초기화 및 적용
+            initializeTheme(body, themeToggle);
+
+            // 4. 모바일 메뉴 토글 이벤트 리스너
+            if (menuToggle && navList) {
+                menuToggle.addEventListener('click', () => {
+                    // nav-list와 body에 'open' 클래스 토글
+                    navList.classList.toggle('open');
+                    body.classList.toggle('nav-open'); // 모바일 뷰에서 스크롤 방지 등을 위해 사용 가능 (CSS에 구현되지 않음)
+                });
+                
+                // 메뉴 링크 클릭 시 메뉴 닫기 (모바일 환경 고려)
+                navLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (navList.classList.contains('open')) {
+                            navList.classList.remove('open');
+                            body.classList.remove('nav-open');
+                        }
+                    });
+                });
+            }
+
+            // 5. 다크/라이트 테마 토글 이벤트 리스너
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    toggleTheme(body, themeToggle);
+                });
+            }
+            
+            // 6. SPA 섹션 전환 이벤트 리스너 (Hash Change)
+            window.addEventListener('hashchange', handleHashChange);
+            // 초기 로드 시 섹션 설정
+            handleHashChange();
+        }
+
+        /**
+         * 로컬 스토리지를 확인하여 초기 테마를 설정합니다.
+         * @param {HTMLElement} body - <body> 요소
+         * @param {HTMLElement} themeToggle - 테마 토글 버튼 요소
+         */
+        function initializeTheme(body, themeToggle) {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            
+            body.className = savedTheme + '-theme';
+            
+            // 토글 버튼 아이콘 설정 (라이트 테마일 때 달 아이콘, 다크 테마일 때 해 아이콘)
+            if (themeToggle) {
+                 if (savedTheme === 'dark') {
+                    themeToggle.querySelector('i').className = 'fas fa-sun';
+                } else {
+                    themeToggle.querySelector('i').className = 'fas fa-moon';
+                }
+            }
+        }
+
+        /**
+         * 테마를 다크/라이트로 전환하고 로컬 스토리지에 저장합니다.
+         * @param {HTMLElement} body - <body> 요소
+         * @param {HTMLElement} themeToggle - 테마 토글 버튼 요소
+         */
+        function toggleTheme(body, themeToggle) {
+            const isDark = body.classList.contains('dark-theme');
+
+            if (isDark) {
+                // 다크 -> 라이트로 전환
+                body.classList.replace('dark-theme', 'light-theme');
+                themeToggle.querySelector('i').className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                // 라이트 -> 다크로 전환
+                body.classList.replace('light-theme', 'dark-theme');
+                themeToggle.querySelector('i').className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        /**
+         * URL 해시(#home, #tech 등)에 따라 보이는 섹션을 전환합니다.
+         */
+        function handleHashChange() {
+            const sections = document.querySelectorAll('.content-section');
+            // 기본적으로 #home을 사용하며, 해시가 없으면 #home으로 간주
+            let targetId = window.location.hash.substring(1) || 'home'; 
+
+            sections.forEach(section => {
+                if (section.id === targetId) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+
+            // 내비게이션 링크의 'active' 상태 업데이트
+            document.querySelectorAll('.nav-list a').forEach(link => {
+                link.classList.remove('active-link');
+                if (link.getAttribute('href').substring(1) === targetId) {
+                    link.classList.add('active-link');
+                }
+            });
+            
+            // 페이지 최상단으로 스크롤 (헤더 고정 시 보기 좋게)
+            window.scrollTo(0, 0);
+        }
     </script>
 </body>
 </html>
+
+---
+
+**요약:**
+
+제가 제공한 코드는 **`블로그 홈페이지 (단일 파일):index.html`** 이라는 이름으로 하나의 HTML 파일에 생성되었습니다. 위의 두 번째 섹션에 있는 긴 코드를 복사해서 사용하시면 됩니다. 문제가 해결되셨기를 바랍니다!
