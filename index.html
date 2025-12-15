@@ -3,38 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hyuck's Blog</title>
-    <!-- 폰트 및 아이콘 로드 -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>Hyuck's Quantum Physics & Music Blog</title>
+    <!-- Inter 폰트 사용 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icon Library (Standard CDN for reliability) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ========================================
-        1. CSS Variables & Reset (스타일 설정)
-        ========================================
-        */
+        /*
+         * =======================================================
+         * 1. CSS Variables & Global Styles (최신 디자인 트렌드 적용)
+         * =======================================================
+         */
         :root {
-            /* Light Theme Variables */
-            --bg-color: #ffffff;
-            --surface-color: #f8f9fa;
-            --text-primary: #1a1a1a;
-            --text-secondary: #666666;
-            --accent-color: #2563eb; /* Royal Blue */
-            --border-color: #e5e7eb;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --transition-speed: 0.3s;
-            --header-height: 70px;
+            /* Light Mode */
+            --color-bg: #f8f9fa;
+            --color-text-primary: #212529;
+            --color-text-secondary: #495057;
+            --color-accent: #007bff; /* Primary Blue */
+            --color-card-bg: #ffffff;
+            --color-border: #e9ecef;
+            --color-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --color-hover-bg: #f1f3f5;
         }
 
-        /* Dark Theme Variables */
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --surface-color: #1e1e1e;
-            --text-primary: #e5e5e5;
-            --text-secondary: #a3a3a3;
-            --accent-color: #60a5fa;
-            --border-color: #333333;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        /* Dark Mode */
+        .dark-mode {
+            --color-bg: #1a1a1a;
+            --color-text-primary: #e9ecef;
+            --color-text-secondary: #adb5bd;
+            --color-accent: #4da6ff; /* Lighter Blue for contrast */
+            --color-card-bg: #2b2b2b;
+            --color-border: #3c3c3c;
+            --color-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --color-hover-bg: #3c3c3c;
         }
 
+        /* Global Reset and Typography */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -42,571 +46,705 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text-primary);
+            transition: background-color 0.3s, color 0.3s;
             line-height: 1.6;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
         }
 
         a {
             text-decoration: none;
-            color: inherit;
+            color: var(--color-accent);
+            transition: color 0.2s;
         }
 
-        ul {
-            list-style: none;
+        a:hover {
+            color: var(--color-text-primary);
         }
 
-        img {
-            max-width: 100%;
-            display: block;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        /* ========================================
-        2. Header & Navigation (헤더)
-        ========================================
-        */
+        /*
+         * =======================================================
+         * 2. Header & Navigation (헤더 및 GNB)
+         * =======================================================
+         */
         header {
-            position: fixed;
+            border-bottom: 1px solid var(--color-border);
+            padding: 15px 0;
+            margin-bottom: 30px;
+            position: sticky;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: var(--header-height);
-            background-color: var(--bg-color);
-            border-bottom: 1px solid var(--border-color);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
+            z-index: 100;
+            background-color: var(--color-card-bg); /* Use card background for header to stand out slightly */
+            box-shadow: var(--color-shadow);
         }
 
-        .logo {
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo a {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--accent-color);
-            cursor: pointer;
+            color: var(--color-text-primary);
         }
 
-        .nav-menu {
+        .nav-links {
             display: flex;
-            gap: 2rem;
-            align-items: center;
+            gap: 20px;
         }
 
         .nav-link {
             font-weight: 500;
-            color: var(--text-secondary);
+            padding: 5px 10px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
             cursor: pointer;
-            transition: color 0.2s;
+            color: var(--color-text-secondary);
         }
 
         .nav-link:hover, .nav-link.active {
-            color: var(--accent-color);
+            background-color: var(--color-hover-bg);
+            color: var(--color-accent);
         }
 
-        .theme-toggle, .mobile-menu-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-primary);
-            padding: 0.5rem;
+        /* Utility buttons (Dark Mode Toggle, Mobile Menu) */
+        .utility-buttons {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--color-text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .icon-btn:hover {
+            background-color: var(--color-hover-bg);
         }
 
         .mobile-menu-btn {
-            display: none; /* Desktop default */
+            display: none; /* Hidden on desktop */
         }
 
-        /* ========================================
-        3. Main Layout & Components (메인)
-        ========================================
-        */
-        main {
-            margin-top: var(--header-height);
-            min-height: calc(100vh - var(--header-height) - 100px); /* Footer height approx */
-            padding: 2rem;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-            animation: fadeIn 0.5s ease-in-out;
-        }
+        /*
+         * =======================================================
+         * 3. Main Content & Posts (주요 콘텐츠)
+         * =======================================================
+         */
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Hero / Featured Section */
-        .hero {
-            margin-bottom: 4rem;
-            text-align: center;
-            padding: 3rem 1rem;
-            background-color: var(--surface-color);
-            border-radius: 1rem;
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .hero p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Section Titles */
-        .section-title {
-            font-size: 1.8rem;
-            margin-bottom: 2rem;
-            border-left: 5px solid var(--accent-color);
-            padding-left: 1rem;
-        }
-
-        /* Grid System */
-        .post-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Desktop: 3 columns */
-            gap: 2rem;
-        }
-
-        /* Card Component */
-        .card {
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
+        /* Featured Post Style */
+        .featured-post {
+            background-color: var(--color-card-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
             overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
+            margin-bottom: 40px;
+            display: flex;
+            box-shadow: var(--color-shadow);
+            transition: transform 0.3s;
+        }
+
+        .featured-post:hover {
+            transform: translateY(-5px);
+        }
+
+        .featured-img-container {
+            width: 50%;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .featured-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured-content {
+            width: 50%;
+            padding: 40px;
             display: flex;
             flex-direction: column;
+            justify-content: center;
         }
 
-        .card:hover {
+        .featured-content h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .featured-content p {
+            color: var(--color-text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .post-meta {
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Post Grid Style */
+        .post-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3열 구조 */
+            gap: 30px;
+            padding-bottom: 50px;
+        }
+
+        .post-card {
+            background-color: var(--color-card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+            box-shadow: var(--color-shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .post-card:hover {
             transform: translateY(-5px);
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .card-image {
+        .post-img {
             width: 100%;
             height: 200px;
             object-fit: cover;
-            background-color: var(--surface-color);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover .card-image {
-            transform: scale(1.05);
+            /* Placeholder styling */
+            background-color: var(--color-hover-bg);
         }
 
         .card-content {
-            padding: 1.5rem;
-            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .card-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: var(--color-text-primary);
+        }
+
+        .card-content p {
+            font-size: 0.95rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* About Section Specific Styling */
+        .about-section {
             display: flex;
             flex-direction: column;
-        }
-
-        .card-category {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            color: var(--accent-color);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .card-excerpt {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
-            flex-grow: 1;
-        }
-
-        .card-meta {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-top: 1px solid var(--border-color);
-            padding-top: 1rem;
-        }
-
-        /* About Section Styles */
-        .about-container {
-            display: flex;
-            gap: 3rem;
-            align-items: center;
-            background: var(--surface-color);
-            padding: 3rem;
-            border-radius: 1rem;
+            padding: 50px 20px;
+            text-align: center;
         }
 
         .profile-img {
-            width: 200px;
-            height: 200px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid var(--accent-color);
+            margin-bottom: 20px;
+            border: 4px solid var(--color-accent);
         }
 
-        .about-text h2 {
-            margin-bottom: 1rem;
-            font-size: 2rem;
+        .about-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--color-text-primary);
         }
 
-        .about-links {
-            margin-top: 1.5rem;
+        .about-section p {
+            max-width: 600px;
+            margin-bottom: 30px;
+            color: var(--color-text-secondary);
+        }
+
+        .contact-links {
             display: flex;
-            gap: 1rem;
+            gap: 20px;
+            font-size: 1.1rem;
         }
 
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            background-color: var(--accent-color);
-            color: white;
-            font-weight: 500;
-            transition: opacity 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        /* ========================================
-        4. Footer (푸터)
-        ========================================
-        */
+        /*
+         * =======================================================
+         * 4. Footer (푸터)
+         * =======================================================
+         */
         footer {
-            background-color: var(--surface-color);
-            padding: 3rem 2rem;
-            margin-top: 4rem;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid var(--color-border);
+            padding: 20px 0;
             text-align: center;
-            color: var(--text-secondary);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
         }
 
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+        .footer-nav {
+            margin-bottom: 10px;
         }
 
-        /* ========================================
-        5. Media Queries (반응형)
-        ========================================
-        */
-        /* Tablet Breakpoint */
-        @media (max-width: 1024px) {
-            .post-grid {
-                grid-template-columns: repeat(2, 1fr); /* 2 Columns */
-            }
-            .about-container {
+        .footer-nav a {
+            margin: 0 10px;
+            color: var(--color-text-secondary);
+        }
+
+        .footer-nav a:hover {
+            color: var(--color-accent);
+        }
+
+        /*
+         * =======================================================
+         * 5. Responsive Design (반응형: 미디어 쿼리)
+         * =======================================================
+         */
+
+        /*
+         * BREAKPOINT 1: Tablet (max-width: 992px)
+         */
+        @media (max-width: 992px) {
+            .featured-post {
                 flex-direction: column;
-                text-align: center;
+                height: auto;
+            }
+
+            .featured-img-container,
+            .featured-content {
+                width: 100%;
+                height: auto;
+            }
+
+            .featured-content {
+                padding: 30px;
+            }
+
+            .post-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2열 구조 */
+                gap: 20px;
             }
         }
 
-        /* Mobile Breakpoint */
+        /*
+         * BREAKPOINT 2: Mobile (max-width: 768px)
+         */
         @media (max-width: 768px) {
-            .nav-menu {
-                display: none; /* Hide default nav */
+            header {
+                padding: 10px 0;
+            }
+
+            .nav-links {
+                display: none; /* Hide desktop menu */
+                flex-direction: column;
                 position: absolute;
-                top: var(--header-height);
+                top: 51px; /* Below header */
                 left: 0;
                 width: 100%;
-                background-color: var(--bg-color);
-                flex-direction: column;
-                padding: 1rem 0;
-                border-bottom: 1px solid var(--border-color);
+                background-color: var(--color-card-bg);
+                border-top: 1px solid var(--color-border);
+                box-shadow: var(--color-shadow);
+                padding: 10px 20px;
             }
-            
-            .nav-menu.active {
-                display: flex;
+
+            .nav-links.open {
+                display: flex; /* Show mobile menu when 'open' class is active */
+            }
+
+            .nav-link {
+                padding: 10px 0;
+                border-bottom: 1px solid var(--color-border);
+            }
+            .nav-link:last-child {
+                border-bottom: none;
             }
 
             .mobile-menu-btn {
-                display: block; /* Show hamburger */
+                display: block; /* Show mobile menu button */
             }
 
             .post-grid {
-                grid-template-columns: 1fr; /* 1 Column */
+                grid-template-columns: 1fr; /* 1열 구조 */
             }
 
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .footer-content {
-                flex-direction: column;
+            .featured-content h2 {
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- 헤더 영역 -->
     <header>
-        <div class="logo" onclick="router('home')">Hyuck's Log</div>
-        
-        <button class="mobile-menu-btn" onclick="toggleMenu()">
-            <i data-lucide="menu"></i>
-        </button>
+        <div class="container navbar">
+            <div class="logo">
+                <a href="#home" onclick="navigate('home')">Hyuck's Blog</a>
+            </div>
+            
+            <!-- Global Navigation Bar (GNB) -->
+            <nav class="nav-links" id="main-nav">
+                <span class="nav-link active" data-path="home" onclick="navigate('home')">홈 (Home)</span>
+                <span class="nav-link" data-path="technology" onclick="navigate('technology')">기술 (Technology)</span>
+                <span class="nav-link" data-path="design" onclick="navigate('design')">디자인 (Design/Portfolio)</span>
+                <span class="nav-link" data-path="about" onclick="navigate('about')">소개 (About)</span>
+            </nav>
 
-        <nav>
-            <ul class="nav-menu" id="nav-menu">
-                <li class="nav-link active" onclick="router('home')">Home</li>
-                <li class="nav-link" onclick="router('tech')">Technology</li>
-                <li class="nav-link" onclick="router('design')">Design</li>
-                <li class="nav-link" onclick="router('about')">About</li>
-            </ul>
-        </nav>
-
-        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">
-            <i data-lucide="moon" id="theme-icon"></i>
-        </button>
+            <!-- Utility Buttons (Dark Mode & Mobile Menu) -->
+            <div class="utility-buttons">
+                <!-- Dark Mode Toggle -->
+                <button class="icon-btn" id="dark-mode-toggle" aria-label="다크 모드 토글">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <!-- Mobile Menu Toggle Button -->
+                <button class="icon-btn mobile-menu-btn" id="mobile-menu-btn" aria-label="모바일 메뉴 열기/닫기">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
     </header>
 
-    <!-- 메인 컨텐츠 영역 (SPA 라우팅 대상) -->
-    <main id="app">
-        <!-- Javascript가 이 부분에 컨텐츠를 주입합니다 -->
+    <main class="container" id="app-content">
+        <!-- Main content will be dynamically loaded here by JavaScript (SPA) -->
     </main>
 
-    <!-- 푸터 영역 -->
     <footer>
-        <div class="footer-content">
-            <div>&copy; 2025 Hyuck. All rights reserved.</div>
-            <div style="display: flex; gap: 1rem;">
-                <a href="https://github.com/hc542" target="_blank">GitHub</a>
-                <a href="mailto:hcho@cnu.ac.kr">Email</a>
+        <div class="container">
+            <div class="footer-nav">
+                <a href="#home" onclick="navigate('home')">홈</a>
+                <a href="#technology" onclick="navigate('technology')">기술</a>
+                <a href="#design" onclick="navigate('design')">디자인</a>
+                <a href="#about" onclick="navigate('about')">소개</a>
             </div>
+            <p>&copy; <span id="current-year"></span> Hyuck. Powered by Static HTML/CSS/JS. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
-        /* ========================================
-        1. Data Definition (item.csv 내용 반영)
-        ========================================
-        */
-        const blogData = [
-            { category: 'design', subCategory: 'ui/ux', title: '마이크로 인터렉션의 힘', content: '사용자 경험 향상 애니메이션', date: '2025-12-01' },
-            { category: 'design', subCategory: 'system', title: '디자인 시스템 구축 실패기', content: '토큰 네이밍 부터 배포 까지', date: '2025-12-02' },
-            { category: 'technology', subCategory: 'backend', title: 'Node.js 이벤트 루프 완벽 가이드', content: '싱글 스레드 환경 비동기 처리', date: '2025-12-03' },
-            { category: 'technology', subCategory: 'frontend', title: 'React 19 컴파일러 도입기', content: '수동 메모이제이션의 종말?', date: '2025-12-04' },
-            { category: 'technology', subCategory: 'devops', title: '서버리스 아키텍처 비용 최적화', content: 'AWS Lambda 비용 절감', date: '2025-12-05' },
-            { category: 'portpolio', subCategory: 'web', title: '인공지능', content: '인공지능 발전 현황', date: '2025-12-06' },
-            { category: 'portpolio', subCategory: 'python', title: '테트리스 코드', content: '파이선 테트리스', date: '2025-12-07' }
+        /*
+         * =======================================================
+         * JAVASCRIPT: Data, Routing, and UI Interaction (DOM 조작)
+         * =======================================================
+         */
+
+        // 1. Post Data (item.csv 내용 기반) - 이미지 업데이트 완료!
+        const POSTS = [
+            // technology
+            { 
+                id: 1, 
+                category: 'technology', 
+                title: 'Superconducting Quan Computer', 
+                content: 'Superconducting quantum computer recent trend overview. Exploring the latest in qubit coherence times.', 
+                date: '2025-12-03', 
+                // [이미지 변경] 초전도 양자 칩과 유사한 하이테크/회로 이미지
+                image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80' 
+            }, 
+            { 
+                id: 2, 
+                category: 'technology', 
+                title: 'Ion Trap Quan Computer', 
+                content: 'Ion Trap quantum computer recent trend overview. Precision laser manipulation of individual ions.', 
+                date: '2025-12-04', 
+                // [이미지 변경] 레이저/광학 실험실 느낌의 이미지
+                image: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80' 
+            },
+            // portpolio (Used for Design/Portfolio section)
+            { 
+                id: 3, 
+                category: 'portpolio', 
+                title: 'Physics of Sound & Music', 
+                content: 'Physics of sound, music, and musical instrument analysis. Understanding harmonics and waves.', 
+                date: '2025-12-06', 
+                // [이미지 변경] 악기/음표/음파 관련 이미지
+                image: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=800&q=80' 
+            },
+            { 
+                id: 4, 
+                category: 'portpolio', 
+                title: 'Quantum mechanics for QC', 
+                content: 'Basic quantum physics for quantum computer tutorial. The mathematics behind superposition.', 
+                date: '2025-12-07', 
+                // [이미지 변경] 칠판의 수학 공식/물리학 관련 이미지
+                image: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=800&q=80' 
+            },
         ];
+        
+        // Featured Post (The newest one)
+        // [이미지 변경] 가장 최신 글(Featured)은 웅장한 미래지향적 양자 컴퓨터 느낌
+        const featuredPost = POSTS.reduce((latest, post) => {
+            return new Date(post.date) > new Date(latest.date) ? post : latest;
+        }, POSTS[0]);
 
-        const featuredPost = blogData.find(post => post.title.includes('React 19'));
+        // 만약 최신 글이 없을 경우를 대비한 기본값도 업데이트
+        const defaultFeatured = { 
+            id: 0, 
+            category: 'Notice', 
+            title: 'Welcome to the Blog', 
+            content: 'No posts yet.', 
+            date: '2025-01-01', 
+            image: 'https://images.unsplash.com/photo-1610444583642-83244225b686?auto=format&fit=crop&w=800&q=80' 
+        };
+        
+        // 실제 사용할 Featured Post 결정
+        const finalFeaturedPost = POSTS.length > 0 ? featuredPost : defaultFeatured;
 
-        /* ========================================
-        2. Component Rendering Functions (렌더링)
-        ========================================
-        */
+        // User Data
+        const USER_DATA = {
+            name: 'Hyuck',
+            github: 'https://github.com/hc542',
+            email: 'hcho@cnu.ac.kr',
+            bio: '양자 컴퓨터, 양자 역학, 그리고 소리와 음악의 물리학에 대한 연구 및 프로젝트를 기록하는 블로그입니다. 새로운 기술과 지식을 공유합니다.',
+            // [이미지 변경] 프로필 사진: 깔끔한 인물 아이콘 또는 실제 사진 느낌의 플레이스홀더
+            image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80' 
+        };
 
-        // 카드 HTML 생성 함수
-        function createCard(post) {
-            // Picsum Photos를 사용하여 실제 랜덤 이미지 생성
-            // 'seed'에 title을 넣어 동일한 포스트에는 항상 같은 이미지가 뜨도록 고정 (새로고침해도 유지)
-            const seed = encodeURIComponent(post.title);
-            const imgSrc = `https://picsum.photos/seed/${seed}/600/400`;
+
+        // 2. DOM Manipulation Functions (Content Rendering)
+
+        /**
+         * @param {Object} post The post data object.
+         * @returns {string} HTML string for a single post card.
+         */
+        function createPostCard(post) {
+            // 모든 포스트 카드는 POSTS에 정의된 고유한 이미지를 사용합니다.
+            const imgUrl = post.image;
 
             return `
-                <article class="card">
-                    <img src="${imgSrc}" alt="${post.title}" class="card-image" loading="lazy">
+                <article class="post-card" onclick="alert('Post ID: ${post.id}\\nTitle: ${post.title}')">
+                    <img src="${imgUrl}" alt="${post.title}" class="post-img" onerror="this.onerror=null;this.src='https://placehold.co/800x600/868e96/ffffff?text=Image+Not+Found';">
                     <div class="card-content">
-                        <span class="card-category">${post.category} / ${post.subCategory}</span>
-                        <h3 class="card-title">${post.title}</h3>
-                        <p class="card-excerpt">${post.content}</p>
-                        <div class="card-meta">
-                            <span>By Hyuck</span>
+                        <h3>${post.title}</h3>
+                        <p>${post.content}</p>
+                        <div class="post-meta">
+                            <span>${post.category.toUpperCase()}</span>
                             <span>${post.date}</span>
                         </div>
                     </div>
                 </article>
             `;
         }
-
-        // Home View 렌더링
-        function renderHome() {
-            const app = document.getElementById('app');
-            
-            // Featured Post Image (고화질)
-            const featuredSeed = encodeURIComponent(featuredPost.title);
-            const featuredImgSrc = `https://picsum.photos/seed/${featuredSeed}/800/400`;
-
-            const featuredHTML = `
-                <section class="hero">
-                    <div style="max-width: 800px; margin: 0 auto;">
-                        <span style="color: var(--accent-color); font-weight: bold; display: block; margin-bottom: 0.5rem;">Featured Post</span>
-                        <h1>${featuredPost.title}</h1>
-                        <p>${featuredPost.content}</p>
-                        <img src="${featuredImgSrc}" 
-                             alt="Featured" 
-                             style="width: 100%; height: auto; border-radius: 1rem; margin-top: 2rem; box-shadow: var(--card-shadow);">
-                    </div>
-                </section>
-            `;
-
-            // Recent Posts Grid (All items)
-            const gridHTML = `
-                <section>
-                    <h2 class="section-title">Latest Posts</h2>
-                    <div class="post-grid">
-                        ${blogData.slice().reverse().map(post => createCard(post)).join('')}
-                    </div>
-                </section>
-            `;
-
-            app.innerHTML = featuredHTML + gridHTML;
-        }
-
-        // Technology View 렌더링
-        function renderTech() {
-            const app = document.getElementById('app');
-            // technology와 portpolio(코드 관련)를 포함
-            const posts = blogData.filter(post => post.category === 'technology' || post.category === 'portpolio');
-            
-            app.innerHTML = `
-                <section>
-                    <h2 class="section-title">Technology & Dev</h2>
-                    <p style="margin-bottom: 2rem; color: var(--text-secondary);">
-                        백엔드, 프론트엔드, 그리고 다양한 개발 경험을 공유합니다.
-                    </p>
-                    <div class="post-grid">
-                        ${posts.length ? posts.map(post => createCard(post)).join('') : '<p>게시물이 없습니다.</p>'}
-                    </div>
-                </section>
-            `;
-        }
-
-        // Design View 렌더링
-        function renderDesign() {
-            const app = document.getElementById('app');
-            const posts = blogData.filter(post => post.category === 'design');
-            
-            app.innerHTML = `
-                <section>
-                    <h2 class="section-title">Design Thoughts</h2>
-                    <p style="margin-bottom: 2rem; color: var(--text-secondary);">
-                        UI/UX와 디자인 시스템에 대한 고찰입니다.
-                    </p>
-                    <div class="post-grid">
-                        ${posts.length ? posts.map(post => createCard(post)).join('') : '<p>게시물이 없습니다.</p>'}
-                    </div>
-                </section>
-            `;
-        }
-
-        // About View 렌더링
-        function renderAbout() {
-            const app = document.getElementById('app');
-            const profileImageSrc = "image/portfolio.jpg";
-            
-            app.innerHTML = `
-                <section class="about-container">
-                    <img src="${profileImageSrc}" 
-                         alt="Hyuck" 
-                         class="profile-img"
-                         onerror="this.src='https://picsum.photos/seed/hyuck-profile/200/200'">
-                    <div class="about-text">
-                        <h2>Hello, I'm Hyuck 👋</h2>
-                        <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 1rem;">
-                            기술과 디자인의 경계에서 새로운 가치를 만드는 개발자입니다.<br>
-                            더 나은 사용자 경험을 위해 끊임없이 고민하고 기록합니다.
-                        </p>
-                        <div class="about-links">
-                            <a href="https://github.com/hc542" target="_blank" class="btn">
-                                <i data-lucide="github"></i> GitHub
-                            </a>
-                            <a href="mailto:hcho@cnu.ac.kr" class="btn" style="background-color: var(--text-secondary);">
-                                <i data-lucide="mail"></i> Contact Me
-                            </a>
-                        </div>
-                    </div>
-                </section>
-            `;
-            lucide.createIcons(); // 동적 렌더링 후 아이콘 갱신
-        }
-
-        /* ========================================
-        3. Router & Interaction Logic (로직)
-        ========================================
-        */
         
-        // 라우터 함수
-        function router(view) {
-            // 네비게이션 활성 상태 변경
+        /**
+         * Renders the Home page content.
+         */
+        function renderHome() {
+            const contentDiv = document.getElementById('app-content');
+            
+            // Filter to get the 3 latest posts excluding the featured one
+            const latestPosts = POSTS.filter(p => p.id !== finalFeaturedPost.id)
+                                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                                    .slice(0, 3);
+                                    
+            // Featured Post Image
+            const featuredImgUrl = finalFeaturedPost.image;
+
+            contentDiv.innerHTML = `
+                <!-- Featured Post Section -->
+                <section class="featured-post">
+                    <div class="featured-img-container">
+                        <img src="${featuredImgUrl}" alt="${finalFeaturedPost.title}" class="featured-img" onerror="this.onerror=null;this.src='https://placehold.co/800x600/343a40/ffffff?text=Featured+Image';">
+                    </div>
+                    <div class="featured-content">
+                        <span class="post-meta" style="margin-bottom: 5px;">${finalFeaturedPost.category.toUpperCase()} | ${finalFeaturedPost.date}</span>
+                        <h2>${finalFeaturedPost.title}</h2>
+                        <p>${finalFeaturedPost.content}</p>
+                        <a href="#" class="read-more" onclick="alert('Viewing Featured Post: ${finalFeaturedPost.title}'); return false;">자세히 보기 &rarr;</a>
+                    </div>
+                </section>
+
+                <!-- Post Grid Section -->
+                <h2>최근 포스트 (Recent Posts)</h2>
+                <div class="post-grid">
+                    ${latestPosts.map(createPostCard).join('')}
+                </div>
+            `;
+        }
+
+        /**
+         * Renders the Technology page content.
+         */
+        function renderTechnology() {
+            const contentDiv = document.getElementById('app-content');
+            const techPosts = POSTS.filter(p => p.category === 'technology')
+                                   .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            contentDiv.innerHTML = `
+                <h1 style="margin-bottom: 30px; font-size: 2rem;">기술 (Technology)</h1>
+                <div class="post-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    ${techPosts.map(createPostCard).join('')}
+                </div>
+                ${techPosts.length === 0 ? '<p style="text-align: center; color: var(--color-text-secondary);">아직 기술 관련 포스트가 없습니다.</p>' : ''}
+            `;
+        }
+
+        /**
+         * Renders the Design/Portfolio page content.
+         */
+        function renderDesign() {
+            const contentDiv = document.getElementById('app-content');
+            // 'portpolio' items are mapped to the '디자인' page
+            const designPosts = POSTS.filter(p => p.category === 'portpolio')
+                                     .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            contentDiv.innerHTML = `
+                <h1 style="margin-bottom: 30px; font-size: 2rem;">디자인 / 포트폴리오 (Design / Portfolio)</h1>
+                <div class="post-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    ${designPosts.map(createPostCard).join('')}
+                </div>
+                ${designPosts.length === 0 ? '<p style="text-align: center; color: var(--color-text-secondary);">아직 디자인/포트폴리오 관련 포스트가 없습니다.</p>' : ''}
+            `;
+        }
+        
+        /**
+         * Renders the About page content.
+         */
+        function renderAbout() {
+            const contentDiv = document.getElementById('app-content');
+            contentDiv.innerHTML = `
+                <section class="about-section">
+                    <img src="${USER_DATA.image}" alt="Hyuck's Profile" class="profile-img" onerror="this.onerror=null;this.src='https://placehold.co/150x150/007bff/ffffff?text=Hyuck+P';">
+                    
+                    <h1>${USER_DATA.name} (Hyuck)</h1>
+                    <p class="subtitle" style="font-size: 1.1rem; color: var(--color-accent); margin-top: -15px;">Project: interest, contact</p>
+                    <p>${USER_DATA.bio}</p>
+
+                    <div class="contact-links">
+                        <a href="${USER_DATA.github}" target="_blank" style="display: flex; align-items: center; gap: 5px;">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        <a href="mailto:${USER_DATA.email}" style="display: flex; align-items: center; gap: 5px;">
+                            <i class="fas fa-envelope"></i> Email
+                        </a>
+                    </div>
+                </section>
+            `;
+        }
+
+
+        // 3. Routing & Navigation
+
+        const routes = {
+            'home': renderHome,
+            'technology': renderTechnology,
+            'design': renderDesign,
+            'about': renderAbout
+        };
+
+        /**
+         * Handles navigation to a specific path/page.
+         * @param {string} path - The page identifier (e.g., 'home', 'technology').
+         */
+        function navigate(path) {
+            const routeHandler = routes[path] || routes['home'];
+            routeHandler();
+            updateNavigation(path);
+            
+            // Update URL hash for SPA-like history and direct linking
+            history.pushState(null, '', `#${path}`);
+
+            // Close mobile menu if open
+            document.getElementById('main-nav').classList.remove('open');
+        }
+        
+        /**
+         * Updates the active state of navigation links.
+         * @param {string} currentPath - The current active page path.
+         */
+        function updateNavigation(currentPath) {
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
-                if(link.textContent.toLowerCase().includes(view) || (view === 'home' && link.textContent === 'Home')) {
+                if (link.getAttribute('data-path') === currentPath) {
                     link.classList.add('active');
                 }
             });
-
-            // 화면 전환
-            if (view === 'home') renderHome();
-            else if (view === 'tech') renderTech();
-            else if (view === 'design') renderDesign();
-            else if (view === 'about') renderAbout();
-
-            // 모바일 메뉴 닫기
-            document.getElementById('nav-menu').classList.remove('active');
-            
-            // 페이지 상단으로 이동
-            window.scrollTo(0, 0);
         }
+        
+        // 4. UI Interaction Logic (Mobile Menu & Dark Mode)
 
-        // 다크모드 토글
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.getElementById('theme-icon');
-            const currentTheme = body.getAttribute('data-theme');
-            
-            if (currentTheme === 'dark') {
-                body.setAttribute('data-theme', 'light');
-                icon.setAttribute('data-lucide', 'moon');
+        /**
+         * Toggles the visibility of the mobile navigation menu.
+         */
+        function toggleMobileMenu() {
+            const nav = document.getElementById('main-nav');
+            const buttonIcon = document.querySelector('#mobile-menu-btn i');
+            nav.classList.toggle('open');
+            if (nav.classList.contains('open')) {
+                buttonIcon.classList.remove('fa-bars');
+                buttonIcon.classList.add('fa-times');
             } else {
-                body.setAttribute('data-theme', 'dark');
-                icon.setAttribute('data-lucide', 'sun');
+                buttonIcon.classList.remove('fa-times');
+                buttonIcon.classList.add('fa-bars');
             }
-            lucide.createIcons();
+        }
+        
+        /**
+         * Toggles Dark Mode state.
+         */
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            // Store preference in localStorage (optional, but good practice)
+            localStorage.setItem('darkMode', isDarkMode);
+
+            // Update icon
+            const icon = document.querySelector('#dark-mode-toggle i');
+            if (isDarkMode) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
         }
 
-        // 모바일 메뉴 토글
-        function toggleMenu() {
-            document.getElementById('nav-menu').classList.toggle('active');
-        }
+        // 5. Initialization
 
-        /* ========================================
-        4. Initialization (초기화)
-        ========================================
-        */
         document.addEventListener('DOMContentLoaded', () => {
-            renderHome();       // 초기 화면 렌더링
-            lucide.createIcons(); // 아이콘 초기화
+            // Set current year in footer
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // Attach event listeners
+            document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
+            document.getElementById('dark-mode-toggle').addEventListener('click', toggleDarkMode);
+
+            // Check for stored Dark Mode preference
+            const storedDarkMode = localStorage.getItem('darkMode');
+            if (storedDarkMode === 'true') {
+                document.body.classList.add('dark-mode');
+                document.querySelector('#dark-mode-toggle i').classList.add('fa-sun');
+            } else {
+                 document.querySelector('#dark-mode-toggle i').classList.add('fa-moon');
+            }
+            
+            // Initial routing based on URL hash
+            const initialPath = window.location.hash.substring(1) || 'home';
+            navigate(initialPath);
+            
+            // Handle browser back/forward buttons
+            window.addEventListener('popstate', () => {
+                const path = window.location.hash.substring(1) || 'home';
+                navigate(path);
+            });
         });
 
     </script>
