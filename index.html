@@ -201,7 +201,7 @@
             display: flex;
             justify-content: space-between;
         }
-
+        
         /* Post Grid Style */
         .post-grid {
             display: grid;
@@ -289,10 +289,85 @@
             gap: 20px;
             font-size: 1.1rem;
         }
+        
+        /*
+         * =======================================================
+         * 4. Post Detail Page Styling (새로 추가됨)
+         * =======================================================
+         */
+        .post-detail {
+            max-width: 900px;
+            margin: 0 auto 50px auto;
+            padding: 30px 0;
+            background-color: var(--color-card-bg);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: var(--color-shadow);
+        }
+
+        .detail-header {
+            margin-bottom: 25px;
+        }
+        
+        .detail-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .detail-meta {
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .detail-meta span {
+            background-color: var(--color-hover-bg);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .detail-image {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: var(--color-shadow);
+        }
+
+        .detail-content {
+            font-size: 1.05rem;
+        }
+
+        .detail-content h2 {
+            font-size: 1.8rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed var(--color-border);
+            color: var(--color-accent);
+        }
+
+        .detail-content p, .detail-content ul {
+            margin-bottom: 20px;
+        }
+
+        .detail-content ul {
+            padding-left: 25px;
+            list-style: disc;
+        }
+
+        .detail-content li {
+            margin-bottom: 5px;
+            color: var(--color-text-secondary);
+        }
 
         /*
          * =======================================================
-         * 4. Footer (푸터)
+         * 5. Footer (푸터)
          * =======================================================
          */
         footer {
@@ -318,7 +393,7 @@
 
         /*
          * =======================================================
-         * 5. Responsive Design (반응형: 미디어 쿼리)
+         * 6. Responsive Design (반응형: 미디어 쿼리)
          * =======================================================
          */
 
@@ -344,6 +419,10 @@
             .post-grid {
                 grid-template-columns: repeat(2, 1fr); /* 2열 구조 */
                 gap: 20px;
+            }
+            
+            .post-detail {
+                padding: 20px;
             }
         }
 
@@ -390,6 +469,14 @@
 
             .featured-content h2 {
                 font-size: 1.5rem;
+            }
+            
+            .detail-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .detail-image {
+                height: 200px;
             }
         }
     </style>
@@ -447,7 +534,7 @@
          * =======================================================
          */
 
-        // 1. Post Data (item.csv 내용 기반) - 이미지 업데이트 완료!
+        // 1. Post Data (상세 콘텐츠 추가됨!)
         const POSTS = [
             // technology
             { 
@@ -456,8 +543,22 @@
                 title: 'Superconducting Quan Computer', 
                 content: 'Superconducting quantum computer recent trend overview. Exploring the latest in qubit coherence times.', 
                 date: '2025-12-03', 
-                // [이미지 변경] 초전도 양자 칩과 유사한 하이테크/회로 이미지
-                image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80' 
+                image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80',
+                detailContent: `
+                    <h2>초전도 큐비트의 현황과 도전 과제</h2>
+                    <p>초전도 양자 컴퓨터는 현재 가장 빠르게 발전하고 있는 기술 중 하나입니다. IBM, Google을 포함한 선두 주자들이 이 기술을 통해 100개 이상의 큐비트 시스템을 구현하며 양자 우위(Quantum Supremacy)에 도전하고 있습니다. 하지만 이 기술의 상용화를 위해서는 여전히 몇 가지 중요한 도전 과제가 남아있습니다.</p>
+                    
+                    <h2>극저온 환경의 중요성</h2>
+                    <p>초전도 큐비트는 절대 영도에 가까운 극저온 환경에서만 작동합니다. 일반적으로 희석 냉장고(Dilution Refrigerator)를 사용하여 온도를 $15 mK$ 이하로 유지해야 합니다. 이 복잡하고 값비싼 냉각 시스템은 시스템의 확장성과 접근성을 제한하는 주요 요인입니다.</p>
+                    
+                    <h2>주요 과제</h2>
+                    <ul>
+                        <li>**결맞음 시간(Coherence Time):** 큐비트가 양자 상태를 유지하는 시간입니다. 결맞음 시간이 길수록 더 복잡하고 정확한 계산이 가능하지만, 현재는 아직 수 밀리초(ms) 수준에 머물러 있습니다.</li>
+                        <li>**양자 게이트 충실도(Fidelity):** 양자 게이트 연산의 정확도를 나타냅니다. 99.9% 이상의 높은 충실도가 요구되나, 잡음(Noise) 때문에 완벽한 연산은 어렵습니다.</li>
+                        <li>**확장성(Scalability):** 수천, 수만 개의 큐비트를 하나의 칩에 통합하는 기술적 난이도가 매우 높습니다.</li>
+                    </ul>
+                    <p>결론적으로, 초전도 양자 컴퓨터는 막대한 잠재력을 가지고 있지만, 소재 과학, 극저온 공학, 양자 제어 기술 전반에 걸친 혁신이 필요합니다.</p>
+                `
             }, 
             { 
                 id: 2, 
@@ -465,8 +566,23 @@
                 title: 'Ion Trap Quan Computer', 
                 content: 'Ion Trap quantum computer recent trend overview. Precision laser manipulation of individual ions.', 
                 date: '2025-12-04', 
-                // [이미지 변경] 레이저/광학 실험실 느낌의 이미지
-                image: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80' 
+                image: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80',
+                detailContent: `
+                    <h2>이온 트랩 방식의 높은 게이트 충실도</h2>
+                    <p>이온 트랩(Ion Trap) 방식의 양자 컴퓨터는 초전도 방식에 비해 큐비트의 게이트 충실도(Fidelity)가 매우 높다는 장점을 가집니다. 개별 이온을 레이저와 전자기장을 사용하여 진공 상태에서 정확하게 제어하기 때문에, 측정 오류율이 낮고 장거리 얽힘(Entanglement) 구현이 용이합니다.</p>
+                    
+                    <h2>작동 원리: 레이저와 전자기장</h2>
+                    <p>이온 트랩 큐비트는 주로 이테르븀(Yb+)이나 칼슘(Ca+)과 같은 원자의 이온 상태를 사용합니다. 이 이온들은 진공 챔버 내부에서 전자기장을 이용해 공중에 띄워지고(트랩), 정밀하게 조정된 레이저 펄스를 이용해 큐비트 상태(스핀)를 조작하고 측정합니다.</p>
+
+                    <h2>확장성의 딜레마</h2>
+                    <p>이온 트랩 기술은 게이트 품질 면에서는 탁월하지만, 큐비트의 수를 늘리는 확장성(Scalability)에서 어려움을 겪습니다. 큐비트 수가 증가하면 이온들이 움직이는 공통 진동 모드가 복잡해져서 개별 이온을 정밀하게 제어하기가 어려워집니다. 최근에는 이러한 문제를 해결하기 위해 '모듈식 접근 방식(Modular Approach)'이 연구되고 있습니다.</p>
+                    
+                    <h2>모듈식 아키텍처</h2>
+                    <ul>
+                        <li>**큐비트 셔틀링(Qubit Shuttling):** 이온을 트랩 내에서 이동시켜 필요한 연산을 수행하는 곳으로 옮기는 기술입니다.</li>
+                        <li>**광학 연결(Optical Interconnects):** 작은 트랩 모듈들을 광섬유를 통해 연결하여 양자 정보를 교환하는 방식입니다. 이는 대규모 시스템 구축의 핵심 기술로 주목받고 있습니다.</li>
+                    </ul>
+                `
             },
             // portpolio (Used for Design/Portfolio section)
             { 
@@ -475,8 +591,22 @@
                 title: 'Physics of Sound & Music', 
                 content: 'Physics of sound, music, and musical instrument analysis. Understanding harmonics and waves.', 
                 date: '2025-12-06', 
-                // [이미지 변경] 악기/음표/음파 관련 이미지
-                image: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=800&q=80' 
+                image: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=800&q=80',
+                detailContent: `
+                    <h2>음악을 지배하는 파동 방정식</h2>
+                    <p>음악은 단순히 감정의 영역이 아니라, 수학과 물리학의 언어로 완벽하게 설명될 수 있는 현상입니다. 소리는 공기 중의 압력 파동이며, 모든 악기는 특정한 진동 모드를 생성하여 음색을 결정합니다.</p>
+
+                    <h2>하모닉스(Harmonics)와 푸리에 분석</h2>
+                    <p>하나의 음(Note)을 연주할 때 우리는 기본 주파수(Fundamental Frequency)뿐만 아니라, 그 정수배에 해당하는 배음(Overtone) 또는 하모닉스(Harmonics)를 동시에 듣게 됩니다. 이 배음들의 상대적인 강도가 바로 악기의 고유한 음색(Timbre)을 만들어냅니다. 예를 들어, 플루트와 바이올린이 같은 '도' 음을 연주해도 다르게 들리는 이유가 여기에 있습니다.</p>
+                    <p>이러한 복잡한 파동 형태를 분석하는 데 사용되는 것이 바로 **푸리에 분석(Fourier Analysis)**입니다. 푸리에 분석은 복잡한 주기 함수를 단순한 사인파와 코사인파의 합으로 분해하여, 음색을 구성하는 배음 성분을 정확하게 밝혀냅니다.</p>
+
+                    <h2>현악기와 관악기의 물리학적 차이</h2>
+                    <ul>
+                        <li>**현악기 (String Instruments):** 줄의 길이, 장력, 밀도에 따라 기본 주파수가 결정됩니다. 현을 누르는 위치(운지)는 줄의 유효 길이를 변화시켜 음정을 조절합니다.</li>
+                        <li>**관악기 (Wind Instruments):** 공기 기둥의 길이와 모양이 기본 주파수를 결정합니다. 구멍을 열고 닫거나 밸브를 조작하여 공기 기둥의 길이를 변화시켜 다양한 음을 냅니다.</li>
+                        <li>**공명 (Resonance):** 모든 악기의 몸체(Body)는 특정 주파수에서 공명하여 소리를 증폭시키고 음색을 풍부하게 만드는 중요한 역할을 합니다.</li>
+                    </ul>
+                `
             },
             { 
                 id: 4, 
@@ -484,13 +614,28 @@
                 title: 'Quantum mechanics for QC', 
                 content: 'Basic quantum physics for quantum computer tutorial. The mathematics behind superposition.', 
                 date: '2025-12-07', 
-                // [이미지 변경] 칠판의 수학 공식/물리학 관련 이미지
-                image: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=800&q=80' 
+                image: 'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=800&q=80',
+                detailContent: `
+                    <h2>양자 컴퓨터의 근간: 큐비트와 힐베르트 공간</h2>
+                    <p>양자 컴퓨터의 기본적인 연산 단위는 비트(Bit)가 아닌 큐비트(Qubit)입니다. 고전적인 비트가 0 또는 1 중 하나의 상태만 가질 수 있다면, 큐비트는 **중첩(Superposition)** 상태를 통해 0과 1을 동시에 가질 수 있습니다.</p>
+
+                    <h2>상태 벡터와 중첩 원리</h2>
+                    <p>큐비트의 상태는 $\\ket{\\psi} = \\alpha\\ket{0} + \\beta\\ket{1}$과 같은 상태 벡터로 표현됩니다. 여기서 $\\ket{0}$와 $\\ket{1}$은 기본 상태(Basis States)를 나타내며, $\\alpha$와 $\\beta$는 복소수 확률 진폭입니다. $|\alpha|^2$은 측정했을 때 0이 나올 확률을, $|\beta|^2$은 1이 나올 확률을 나타냅니다. 확률의 총합은 1이어야 하므로 $|\alpha|^2 + |\beta|^2 = 1$ 조건을 만족해야 합니다.</p>
+                    
+                    <h2>얽힘(Entanglement): 양자 정보의 핵심</h2>
+                    <p>두 개 이상의 큐비트가 **얽힘(Entanglement)** 상태에 있을 때, 한 큐비트의 상태를 측정하는 순간 다른 큐비트의 상태가 즉시 결정됩니다. 이는 양자 컴퓨터가 고전 컴퓨터보다 기하급수적으로 많은 정보를 동시에 처리할 수 있게 하는 핵심적인 요소이며, 양자 병렬성(Quantum Parallelism)의 기초가 됩니다.</p>
+
+                    <h2>주요 연산자</h2>
+                    <ul>
+                        <li>**파울리 행렬 ($\sigma_x, \sigma_y, \sigma_z$):** 큐비트의 상태를 회전시키거나 반전시키는 가장 기본적인 양자 게이트 연산자입니다.</li>
+                        <li>**Hadamard 게이트 ($H$):** 큐비트를 기본 상태($\ket{0}$ 또는 $\ket{1}$)에서 완벽한 중첩 상태로 만드는 데 사용됩니다.</li>
+                        <li>**CNOT 게이트:** 두 큐비트 간의 조건부 연산을 수행하며, 얽힘 상태를 생성하는 데 필수적입니다.</li>
+                    </ul>
+                `
             },
         ];
         
         // Featured Post (The newest one)
-        // [이미지 변경] 가장 최신 글(Featured)은 웅장한 미래지향적 양자 컴퓨터 느낌
         const featuredPost = POSTS.reduce((latest, post) => {
             return new Date(post.date) > new Date(latest.date) ? post : latest;
         }, POSTS[0]);
@@ -502,7 +647,8 @@
             title: 'Welcome to the Blog', 
             content: 'No posts yet.', 
             date: '2025-01-01', 
-            image: 'https://images.unsplash.com/photo-1610444583642-83244225b686?auto=format&fit=crop&w=800&q=80' 
+            image: 'https://images.unsplash.com/photo-1610444583642-83244225b686?auto=format&fit=crop&w=800&q=80',
+            detailContent: '<h1>블로그에 오신 것을 환영합니다!</h1><p>아직 작성된 포스트가 없습니다. 새로운 글을 기대해 주세요.</p>'
         };
         
         // 실제 사용할 Featured Post 결정
@@ -514,7 +660,6 @@
             github: 'https://github.com/hc542',
             email: 'hcho@cnu.ac.kr',
             bio: '양자 컴퓨터, 양자 역학, 그리고 소리와 음악의 물리학에 대한 연구 및 프로젝트를 기록하는 블로그입니다. 새로운 기술과 지식을 공유합니다.',
-            // [이미지 변경] 프로필 사진: 깔끔한 인물 아이콘 또는 실제 사진 느낌의 플레이스홀더
             image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80' 
         };
 
@@ -526,11 +671,10 @@
          * @returns {string} HTML string for a single post card.
          */
         function createPostCard(post) {
-            // 모든 포스트 카드는 POSTS에 정의된 고유한 이미지를 사용합니다.
             const imgUrl = post.image;
 
             return `
-                <article class="post-card" onclick="alert('Post ID: ${post.id}\\nTitle: ${post.title}')">
+                <article class="post-card" onclick="navigate('post', ${post.id})">
                     <img src="${imgUrl}" alt="${post.title}" class="post-img" onerror="this.onerror=null;this.src='https://placehold.co/800x600/868e96/ffffff?text=Image+Not+Found';">
                     <div class="card-content">
                         <h3>${post.title}</h3>
@@ -568,7 +712,7 @@
                         <span class="post-meta" style="margin-bottom: 5px;">${finalFeaturedPost.category.toUpperCase()} | ${finalFeaturedPost.date}</span>
                         <h2>${finalFeaturedPost.title}</h2>
                         <p>${finalFeaturedPost.content}</p>
-                        <a href="#" class="read-more" onclick="alert('Viewing Featured Post: ${finalFeaturedPost.title}'); return false;">자세히 보기 &rarr;</a>
+                        <a href="#post/${finalFeaturedPost.id}" class="read-more" onclick="navigate('post', ${finalFeaturedPost.id}); return false;">자세히 보기 &rarr;</a>
                     </div>
                 </section>
 
@@ -639,6 +783,39 @@
                 </section>
             `;
         }
+        
+        /**
+         * Renders the detail page for a specific post ID.
+         * @param {number} postId - The ID of the post to render.
+         */
+        function renderPostDetail(postId) {
+            const contentDiv = document.getElementById('app-content');
+            const post = POSTS.find(p => p.id === postId);
+
+            if (!post) {
+                contentDiv.innerHTML = '<h1 style="text-align: center; padding: 50px;">포스트를 찾을 수 없습니다. (Post Not Found)</h1>';
+                return;
+            }
+
+            contentDiv.innerHTML = `
+                <article class="post-detail">
+                    <header class="detail-header">
+                        <h1>${post.title}</h1>
+                        <div class="detail-meta">
+                            <span>Category: ${post.category.toUpperCase()}</span>
+                            <span>Published: ${post.date}</span>
+                        </div>
+                    </header>
+                    <img src="${post.image}" alt="${post.title}" class="detail-image" onerror="this.onerror=null;this.src='https://placehold.co/900x450/343a40/ffffff?text=Post+Image+Error';">
+                    
+                    <section class="detail-content">
+                        ${post.detailContent}
+                    </section>
+                    
+                    <a href="#home" onclick="navigate('home'); return false;" style="display: block; margin-top: 40px; text-align: center; font-weight: 600;">&larr; 목록으로 돌아가기</a>
+                </article>
+            `;
+        }
 
 
         // 3. Routing & Navigation
@@ -648,19 +825,25 @@
             'technology': renderTechnology,
             'design': renderDesign,
             'about': renderAbout
+            // 'post' is handled dynamically in navigate function
         };
 
         /**
          * Handles navigation to a specific path/page.
-         * @param {string} path - The page identifier (e.g., 'home', 'technology').
+         * @param {string} path - The page identifier (e.g., 'home', 'technology', 'post').
+         * @param {number|null} [postId=null] - Optional post ID for 'post' path.
          */
-        function navigate(path) {
-            const routeHandler = routes[path] || routes['home'];
-            routeHandler();
-            updateNavigation(path);
+        function navigate(path, postId = null) {
             
-            // Update URL hash for SPA-like history and direct linking
-            history.pushState(null, '', `#${path}`);
+            if (path === 'post' && postId !== null) {
+                renderPostDetail(postId);
+                history.pushState(null, '', `#post/${postId}`);
+            } else {
+                const routeHandler = routes[path] || routes['home'];
+                routeHandler();
+                updateNavigation(path);
+                history.pushState(null, '', `#${path}`);
+            }
 
             // Close mobile menu if open
             document.getElementById('main-nav').classList.remove('open');
@@ -671,12 +854,34 @@
          * @param {string} currentPath - The current active page path.
          */
         function updateNavigation(currentPath) {
+            // Remove 'active' class from all links
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
-                if (link.getAttribute('data-path') === currentPath) {
-                    link.classList.add('active');
-                }
             });
+
+            // Find and set 'active' class for the current top-level path
+            // For detail pages ('post'), we highlight the 'home' or appropriate category link
+            let highlightPath = currentPath;
+            const currentPost = POSTS.find(p => p.id === parseInt(currentPath));
+            if (currentPost) {
+                // If on a post detail page, highlight its category's top-level menu item
+                highlightPath = currentPost.category === 'portpolio' ? 'design' : currentPost.category;
+            } else if (currentPath.startsWith('post/')) {
+                 // Try to determine category from hash for highlighting
+                const postId = parseInt(currentPath.split('/')[1]);
+                const post = POSTS.find(p => p.id === postId);
+                if (post) {
+                    highlightPath = post.category === 'portpolio' ? 'design' : post.category;
+                } else {
+                    highlightPath = 'home';
+                }
+            }
+
+
+            const activeLink = document.querySelector(`.nav-link[data-path="${highlightPath}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
         }
         
         // 4. UI Interaction Logic (Mobile Menu & Dark Mode)
@@ -737,13 +942,23 @@
             }
             
             // Initial routing based on URL hash
-            const initialPath = window.location.hash.substring(1) || 'home';
-            navigate(initialPath);
+            const hash = window.location.hash.substring(1);
+            if (hash.startsWith('post/')) {
+                const postId = parseInt(hash.split('/')[1]);
+                navigate('post', postId);
+            } else {
+                navigate(hash || 'home');
+            }
             
             // Handle browser back/forward buttons
             window.addEventListener('popstate', () => {
-                const path = window.location.hash.substring(1) || 'home';
-                navigate(path);
+                const hash = window.location.hash.substring(1);
+                if (hash.startsWith('post/')) {
+                    const postId = parseInt(hash.split('/')[1]);
+                    navigate('post', postId);
+                } else {
+                    navigate(hash || 'home');
+                }
             });
         });
 
